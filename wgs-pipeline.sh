@@ -26,31 +26,27 @@ PIPELINE="kraken2" # Enter your desired pipeline ("kraken2" or "metaphlan").
 # Initate bash shell using conda
 source ~/.bashrc
 
-# Navigate to project folder
+# Navigate to project and samples folder
 cd ${ROOT}${PROJECT_NAME}
+
+mkdir ${SAMPLE_TYPE} && cd ${SAMPLE_TYPE}
 
 ################
 ## CONDITIONS ##
 ################
 
 if [ FRAGMENT_TYPE="paired" ] || [ FRAGMENT_TYPE="single"]; then
-
   echo "Running sequence read(s) in ${FRAGMENT_TYPE} end mode..."
-
 else
   echo "Please specify the type of reads that you have ['paired' or 'single']!"
   scancel $SLURM_JOBID
 fi
 
 if [ PIPELINE="kraken2" ] || [ PIPELINE="metaphlan" ]; then
-
   echo "Running the ${PIPELINE} workflow..."
-
 else
-
   echo "Please set a desired pipeline ['kraken2' or 'metaphlan']!"
   scancel $SLURM_JOBID
-
 fi
 
 ###################
@@ -64,7 +60,7 @@ conda activate kneaddata-0.7.4
 mkdir results
 mkdir results/kneaddata
 
-cd reads/${SAMPLE_TYPE}
+cd ../reads/${SAMPLE_TYPE}
 
 # Run kneaddata on available sequence reads
 if [ FRAGMENT_TYPE="paired" ]; then
@@ -83,7 +79,7 @@ if [ FRAGMENT_TYPE="paired" ]; then
         --trimmomatic-options="ILLUMINACLIP:/scratch/gtesto/adapters/illumina_adapters_DNA.fasta:2:25:10 SLIDINGWINDOW:4:15 MINLEN:100" \
         --reference-db /labs/Microbiome/gtesto/databases/human_genome \
         --max-memory 40g -p 8 -t 8 --output-prefix ${fname} \
-        --output ${ROOT}${PROJECT_NAME}/results
+        --output ${ROOT}${PROJECT_NAME}/${SAMPLE_TYPE}/results
   done
 elif [ FRAGMENT_TYPE="single"]; then
   for i in *_R1_*.fastq.gz
@@ -99,16 +95,16 @@ elif [ FRAGMENT_TYPE="single"]; then
         --trimmomatic-options="ILLUMINACLIP:/scratch/gtesto/adapters/illumina_adapters_DNA.fasta:2:25:10 SLIDINGWINDOW:4:15 MINLEN:100" \
         --reference-db /labs/Microbiome/gtesto/databases/human_genome \
         --max-memory 40g -p 8 -t 8 --output-prefix ${fname} \
-        --output ${ROOT}${PROJECT_NAME}/results
+        --output ${ROOT}${PROJECT_NAME}/${SAMPLE_TYPE}/results
   done
 fi
 
-cd ../../
+cd ../../${SAMPLE_TYPE}
 
 # Output kneaddata report
 kneaddata_read_count_table \
   --input results \
-  --output reports/kneaddata/${SAMPLE_TYPE}_reads_report.kneaddata
+  --output reports/kneaddata/reads_report.kneaddata
 
 # Clean up file structure
 cd results
@@ -255,7 +251,7 @@ if [ PIPELINE="kraken2" ]; then
     python /labs/Microbiome/gtesto/scripts/KrakenTools-1.2/kreport2krona.py -r ${filename} -o ../krona/kraken2/${fname}.krona;
   done
 
-  ktImportText ../krona/kraken2/*.krona -o ../krona/${SAMPLE_TYPE}_kraken2.krona.html
+  ktImportText ../krona/kraken2/*.krona -o ../krona/kraken2.krona.html
 
   cd bracken
   for i in *_species_report.bracken;
@@ -265,7 +261,7 @@ if [ PIPELINE="kraken2" ]; then
     python /labs/Microbiome/gtesto/scripts/KrakenTools-1.2/kreport2krona.py -r ${filename} -o ../../krona/bracken/${fname}.krona;
   done
 
-  ktImportText ../../krona/bracken/*.krona -o ../../krona/${SAMPLE_TYPE}_bracken.krona.html
+  ktImportText ../../krona/bracken/*.krona -o ../../krona/bracken.krona.html
 
   cd ../../../
 
@@ -325,16 +321,19 @@ elif [ PIPELINE="metaphlan" ]; then
   # Run metaphlan on available trims
   for i in results/paired/*_paired_1.fastq
   do
-      filename=$(basename "$i")
-      fname="${filename%_paired_*.fastq}";
-      metaphlan --bowtie2db /labs/Microbiome/gtesto/databases/bowtie2 results/paired/${fname}_paired_1.fastq,results/paired/${fname}_paired_2.fastq --input_type fastq --bowtie2out results/bowtie2/${fname}.bowtie2.bz2 -o reports/metaphlan/${fname}.txt
+    filename=$(basename "$i")
+    fname="${filename%_paired_*.fastq}";
+    metaphlan --bowtie2db /labs/Microbiome/gtesto/databases/bowtie2 results/paired/${fname}_paired_1.fastq,results/paired/${fname}_paired_2.fastq --input_type fastq --bowtie2out results/bowtie2/${fname}.bowtie2.bz2 -o reports/metaphlan/${fname}.txt
   done
 
   cd reports/metaphlan
 
-  merge_metaphlan_tables.py * > ${SAMPLE_TYPE}-metaphlan-results.txt
+  merge_metaphlan_tables.py * > merged_abundance_table.txt
 
-  mv ${SAMPLE_TYPE}-metaphlan-results.text ../../
+  grep -E "s__|clade" merged_abundance_table.txt | sed 's/^.*s__//g'\
+    | cut -f1,3-8 | sed -e 's/clade_name/SampleID/g' > merged_abundance_table_species.txt
+
+  mv merged_abundance_table_species.txt ../../${SAMPLE_TYPE}-metaphlan-results.txt
 
 fi
 
