@@ -106,6 +106,9 @@ kneaddata_read_count_table \
   --input results \
   --output reports/kneaddata/reads_report.kneaddata
 
+# Deactivate kneaddata conda environment
+conda deactivate
+
 # Clean up file structure
 cd results
 
@@ -148,6 +151,9 @@ mkdir reports/multiqc/after_trimming
 fastqc -t 8 results/paired/*.fastq --outdir=reports/fastqc/after_trimming
 multiqc reports/fastqc/after_trimming --outdir=reports/multiqc/after_trimming
 
+# Deactivate the QC conda environment
+conda deactivate
+
 if [ PIPELINE="kraken2" ]; then
 
   #################
@@ -182,6 +188,9 @@ if [ PIPELINE="kraken2" ]; then
     done
 
   fi
+
+  # Deactivate kraken2 conda environment
+  conda deactivate
 
   #################
   ## RUN BRACKEN ##
@@ -227,6 +236,9 @@ if [ PIPELINE="kraken2" ]; then
   mv *_output.bracken ../../../results/kraken2/bracken
   mv *all* ../../../results/kraken2/bracken
 
+  # Deactivate kraken2 conda environment
+  conda deactivate
+
   cd ../../../
 
   ###############
@@ -263,6 +275,9 @@ if [ PIPELINE="kraken2" ]; then
 
   ktImportText ../../krona/bracken/*.krona -o ../../krona/bracken.krona.html
 
+  # Deactivate krona conda environment
+  conda deactivate
+
   cd ../../../
 
   ##############
@@ -290,6 +305,9 @@ if [ PIPELINE="kraken2" ]; then
   kraken-biom *.bracken -o sequences.biom --fmt json
   biom summarize-table -i sequences.biom -o sequences-summary.txt
 
+  # Deactivate biom conda environment
+  conda deactivate
+
   # Move biom files back to the main directory
   mv sequences.biom ../../../../
   mv sequences-summary.txt ../../../../
@@ -300,8 +318,7 @@ if [ PIPELINE="kraken2" ]; then
   cd ../../../
 
   # Rename biom files to sample type
-  mkdir results/biom
-
+  #mkdir results/biom
   mv sequences.biom ${SAMPLE_TYPE}-bracken-results.biom
   mv sequences-summary.txt ${SAMPLE_TYPE}-bracken-summary.txt
 
@@ -311,7 +328,7 @@ elif [ PIPELINE="metaphlan" ]; then
   ## RUN METAPHLAN2 ##
   ####################
 
-  # Activate kraken2 conda environment
+  # Activate metaphlan conda environment
   conda activate metaphlan-3.0.10
 
   # Create output folders
@@ -333,8 +350,13 @@ elif [ PIPELINE="metaphlan" ]; then
   grep -E "s__|clade" merged_abundance_table.txt | sed 's/^.*s__//g'\
     | cut -f1,3-8 | sed -e 's/clade_name/SampleID/g' > merged_abundance_table_species.txt
 
+  # Move and rename merged_abundance_table_species
   mv merged_abundance_table_species.txt ../../${SAMPLE_TYPE}-metaphlan-results.txt
 
+  # Deactivate metaphlan conda environment
+  conda deactivate
+
+  cd ../../
   cd ../../
 
   #################
@@ -346,6 +368,9 @@ elif [ PIPELINE="metaphlan" ]; then
 
   # Run hclust2 on metaphlan results
   hclust2.py -i ${SAMPLE_TYPE}-metaphlan-results.txt -o reports/metaphlan/abundance_heatmap_species.png --ftop 25 --f_dist_f braycurtis --s_dist_f braycurtis --cell_aspect_ratio 0.5 -l --flabel_size 6 --slabel_size 6 --max_flabel_len 100 --max_slabel_len 100 --minv 0.1 --dpi 300
+
+  # Deactivate hclust2 conda environment
+  conda deactivate
 
 fi
 
