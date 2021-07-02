@@ -357,6 +357,28 @@ elif [ PIPELINE="metaphlan" ]; then
   conda deactivate
 
   cd ../../
+
+  ###############
+  ## RUN KRONA ##
+  ###############
+
+  # Activate krona conda environment
+  conda activate krona-2.8
+
+  # Create output folders
+  mkdir reports/krona
+  mkdir reports/krona/metaphlan
+
+  cd reports/metaphlan
+
+  # Generate krona using species reports from bracken
+  python /labs/Microbiome/gtesto/scripts/metaphlan2krona.py -r ../metaphlan/merged_abundance_table.txt -o ../krona/metaphlan/merged_abundance_table.krona
+
+  ktImportText ../krona/metaphlan/*.krona -o ../krona/metaphlan.krona.html
+
+  # Deactivate krona conda environment
+  conda deactivate
+
   cd ../../
 
   #################
