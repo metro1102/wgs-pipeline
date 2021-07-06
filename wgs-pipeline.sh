@@ -93,7 +93,7 @@ mkdir reports/fastqc/before_trimming
 mkdir reports/multiqc/before_trimming
 
 # Run quality control check on trimmed sequence reads
-fastqc -t 8 ../reads/${SAMPLE_TYPE}/*.fastq --outdir=reports/fastqc/before_trimming
+fastqc -t 8 ../reads/${SAMPLE_TYPE}/*.fastq.gz --outdir=reports/fastqc/before_trimming
 multiqc reports/fastqc/before_trimming --outdir=reports/multiqc/before_trimming
 
 # Deactivate QC conda environment
