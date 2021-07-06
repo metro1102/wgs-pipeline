@@ -17,8 +17,8 @@ SAMPLE_TYPE="saliva" # Enter the sample type for your working reads.
 FRAGMENT_TYPE="paired" # Enter reads are "single" or "paired".
 PIPELINE="kraken2" # Enter your desired pipeline ("kraken2" or "metaphlan").
 
-# If using kraken2, please specify which database to use ("standard" or "silva").
-DATABASE="standard"
+# If using kraken2, please specify the database path to use.
+DATABASE="/labs/Microbiome/gtesto/databases/silva_138.1_SSU"
 
 ## !DO NOT EDIT BEYOND THIS POINT! ##
 
@@ -54,21 +54,14 @@ fi
 
 # PIPELINE CONDITIONS
 
+
 if [ PIPELINE="kraken2" ] || [ PIPELINE="metaphlan" ]; then
 
   echo "Running the ${PIPELINE} workflow..."
 
-  # If using kraken2, set the desired database path
+  # If using kraken2, verify if provided a database path
 
-  if [ PIPELINE="kraken2" ] || [ DATABASE="standard" ]; then
-
-    DATABASE="/labs/Microbiome/gtesto/databases/all_nucleotide"
-
-  elif [ PIPELINE="kraken2" ] || [ DATABASE="silva" ]; then
-
-    DATABASE="/labs/Microbiome/gtesto/databases/silva"
-
-  elif [ PIPELINE="kraken2" ] || [ -z "$DATABASE" ]; then
+  if [ PIPELINE="kraken2" ] || [ -z "$DATABASE" ]; then
 
     echo "Please set a desired kraken2 database ['standard' or 'silva']!"
 
