@@ -34,7 +34,9 @@ source ~/.bashrc
 # Navigate to project and samples folder
 cd ${ROOT}${PROJECT_NAME}
 
-mkdir ${SAMPLE_TYPE} && cd ${SAMPLE_TYPE}
+mkdir ${SAMPLE_TYPE}
+
+cd ${SAMPLE_TYPE}
 
 ###############################################################################
 #                             Specific Conditions                             #
@@ -60,7 +62,7 @@ if [ PIPELINE="kraken2" ] || [ PIPELINE="metaphlan" ]; then
 
   # If using kraken2, verify if provided a database path
 
-  if [ PIPELINE="kraken2" ] || [ -z "$DATABASE" ]; then
+  if [ PIPELINE="kraken2" ] && [ -z "$DATABASE" ]; then
 
     echo "Please set a desired kraken2 database ['standard' or 'silva']!"
 
@@ -75,6 +77,27 @@ elif [ -z "$PIPELINE" ]; then
   scancel $SLURM_JOBID
 
 fi
+
+###############################################################################
+#                               Quality Control                               #
+###############################################################################
+
+# Activate QC conda environment
+conda activate kneaddata-0.7.4
+
+# Create output folders
+mkdir reports/fastqc
+mkdir reports/multiqc
+
+mkdir reports/fastqc/before_trimming
+mkdir reports/multiqc/before_trimming
+
+# Run quality control check on trimmed sequence reads
+fastqc -t 8 ../reads/${SAMPLE_TYPE}/*.fastq --outdir=reports/fastqc/before_trimming
+multiqc reports/fastqc/before_trimming --outdir=reports/multiqc/before_trimming
+
+# Deactivate QC conda environment
+conda deactivate
 
 ###############################################################################
 #                                Run Kneaddata                                #
