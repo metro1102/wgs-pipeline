@@ -17,6 +17,9 @@ SAMPLE_TYPE="saliva" # Enter the sample type for your working reads.
 FRAGMENT_TYPE="paired" # Enter reads are "single" or "paired".
 PIPELINE="kraken2" # Enter your desired pipeline ("kraken2" or "metaphlan").
 
+# If using kraken2, please specify which database to use ("standard" or "silva").
+DATABASE="standard"
+
 ## !DO NOT EDIT BEYOND THIS POINT! ##
 
 ####################
@@ -35,18 +38,50 @@ mkdir ${SAMPLE_TYPE} && cd ${SAMPLE_TYPE}
 ## CONDITIONS ##
 ################
 
+# FRAGMENT_TYPE CONDITIONS
+
 if [ FRAGMENT_TYPE="paired" ] || [ FRAGMENT_TYPE="single"]; then
+
   echo "Running sequence read(s) in ${FRAGMENT_TYPE} end mode..."
-else
+
+elif [ -z "$FRAGMENT_TYPE" ]; then
+
   echo "Please specify the type of reads that you have ['paired' or 'single']!"
+
   scancel $SLURM_JOBID
+
 fi
 
+# PIPELINE CONDITIONS
+
 if [ PIPELINE="kraken2" ] || [ PIPELINE="metaphlan" ]; then
+
   echo "Running the ${PIPELINE} workflow..."
-else
+
+  # If using kraken2, set the desired database path
+
+  if [ PIPELINE="kraken2" ] || [ DATABASE="standard" ]; then
+
+    DATABASE="/labs/Microbiome/gtesto/databases/all_nucleotide"
+
+  elif [ PIPELINE="kraken2" ] || [ DATABASE="silva" ]; then
+
+    DATABASE="/labs/Microbiome/gtesto/databases/silva"
+
+  elif [ PIPELINE="kraken2" ] || [ -z "$DATABASE" ]; then
+
+    echo "Please set a desired kraken2 database ['standard' or 'silva']!"
+
+    scancel $SLURM_JOBID
+
+  fi
+
+elif [ -z "$PIPELINE" ]; then
+
   echo "Please set a desired pipeline ['kraken2' or 'metaphlan']!"
+
   scancel $SLURM_JOBID
+
 fi
 
 ###################
@@ -175,7 +210,7 @@ if [ PIPELINE="kraken2" ]; then
     do
       filename=$(basename "$i");
       fname="${filename%_paired_*.fastq}";
-      kraken2 --db /labs/Microbiome/gtesto/databases/all_nucleotide --threads 8 --use-names --output results/kraken2/${fname}_output.kraken --report reports/kraken2/${fname}_report.kraken --paired results/paired/${fname}_paired_1.fastq results/paired/${fname}_paired_2.fastq
+      kraken2 --db ${DATABASE} --threads 8 --use-names --output results/kraken2/${fname}_output.kraken --report reports/kraken2/${fname}_report.kraken --paired results/paired/${fname}_paired_1.fastq results/paired/${fname}_paired_2.fastq
     done
 
   elif [ FRAGMENT_TYPE="single" ]; then
@@ -184,7 +219,7 @@ if [ PIPELINE="kraken2" ]; then
     do
       filename=$(basename "$i");
       fname="${filename%*.fastq}";
-      kraken2 --db /labs/Microbiome/gtesto/databases/all_nucleotide --threads 8 --use-names --output results/kraken2/${fname}_output.kraken --report reports/kraken2/${fname}_report.kraken results/single/${fname}.fastq
+      kraken2 --db ${DATABASE} --threads 8 --use-names --output results/kraken2/${fname}_output.kraken --report reports/kraken2/${fname}_report.kraken results/single/${fname}.fastq
     done
 
   fi
