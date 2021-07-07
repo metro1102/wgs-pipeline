@@ -28,6 +28,106 @@ DATABASE="/labs/Microbiome/gtesto/databases/silva_138.1_SSU"
 #                                Initalization                                #
 ###############################################################################
 
+# Setup Logging ###############################################################
+
+# Init Log (for initalization messages)
+initLog() {
+    BOLD="\e[1m"
+    CYAN="\e[96m"
+    RESET="\e[0m"
+    echo -e "$BOLD" "$CYAN" "$1" "$RESET"
+}
+
+# Slurm Log (for task specific messages)
+slurmLog() {
+    BOLD="\e[1m"
+    GREEN="\e[32m"
+    RESET="\e[0m"
+    echo -e "$BOLD" "$GREEN" "$1" "$RESET"
+}
+
+# Error log (for error messages)
+errorLog() {
+    BOLD="\e[1m"
+    RED="\e[91m"
+    RESET="\e[0m"
+    echo -e "$BOLD" "$RED" "$1" "$RESET"
+}
+
+# Verify Configuration ########################################################
+
+if [ ! -z "$ROOT" ]; then
+
+ initLog "Root directory has been specifed as '${ROOT}'..."
+
+elif [ -z "$ROOT" ]; then
+
+ errorLog "Please specify a root directory for your projects!"
+
+ scancel $SLURM_JOBID
+
+fi
+
+if [ ! -z "$PROJECT_NAME" ]; then
+
+ initLog "Project name has been specified as '${PROJECT_NAME}'..."
+
+elif [ -z "$PROJECT_NAME" ]; then
+
+ errorLog "Please specify a project name!"
+
+ scancel $SLURM_JOBID
+
+fi
+
+if [ ! -z "$SAMPLE_TYPE" ]; then
+
+ initLog "Sample type has been specified as '${SAMPLE_TYPE}'..."
+
+elif [ -z "$SAMPLE_TYPE" ]; then
+
+ errorLog "Please specify the sample type for your working reads!"
+
+ scancel $SLURM_JOBID
+
+fi
+
+if [ FRAGMENT_TYPE="paired" ] || [ FRAGMENT_TYPE="single"]; then
+
+  slurmLog "Running sequence read(s) in ${FRAGMENT_TYPE} end mode..."
+
+elif [ -z "$FRAGMENT_TYPE" ]; then
+
+  errorLog "Please specify the type of reads that you have ['paired' or 'single']!"
+
+  scancel $SLURM_JOBID
+
+fi
+
+if [ PIPELINE="kraken2" ] || [ PIPELINE="metaphlan" ]; then
+
+  slurmLog "Running the ${PIPELINE} workflow..."
+
+  # If using kraken2, verify if provided a database path
+
+  if [ PIPELINE="kraken2" ] && [ -z "$DATABASE" ]; then
+
+    errorLog "Please provide a full path to your kraken2 database!"
+
+    scancel $SLURM_JOBID
+
+  fi
+
+elif [ -z "$PIPELINE" ]; then
+
+  errorLog "Please set a desired pipeline ['kraken2' or 'metaphlan']!"
+
+  scancel $SLURM_JOBID
+
+fi
+
+# Run Configuration ###########################################################
+
 # Initate bash shell using conda
 source ~/.bashrc
 
@@ -38,49 +138,14 @@ mkdir ${SAMPLE_TYPE}
 
 cd ${SAMPLE_TYPE}
 
-###############################################################################
-#                             Specific Conditions                             #
-###############################################################################
-
-# FRAGMENT_TYPE
-if [ FRAGMENT_TYPE="paired" ] || [ FRAGMENT_TYPE="single"]; then
-
-  echo "Running sequence read(s) in ${FRAGMENT_TYPE} end mode..."
-
-elif [ -z "$FRAGMENT_TYPE" ]; then
-
-  echo "Please specify the type of reads that you have ['paired' or 'single']!"
-
-  scancel $SLURM_JOBID
-
-fi
-
-# PIPELINE
-if [ PIPELINE="kraken2" ] || [ PIPELINE="metaphlan" ]; then
-
-  echo "Running the ${PIPELINE} workflow..."
-
-  # If using kraken2, verify if provided a database path
-
-  if [ PIPELINE="kraken2" ] && [ -z "$DATABASE" ]; then
-
-    echo "Please set a desired kraken2 database ['standard' or 'silva']!"
-
-    scancel $SLURM_JOBID
-
-  fi
-
-elif [ -z "$PIPELINE" ]; then
-
-  echo "Please set a desired pipeline ['kraken2' or 'metaphlan']!"
-
-  scancel $SLURM_JOBID
-
-fi
+mkdir results
+mkdir reports
 
 ###############################################################################
 #                               Quality Control                               #
 ###############################################################################
+
+slurmLog "Running raw sequence read(s) through quality control..."
 
 # Activate QC conda environment
 conda activate kneaddata-0.7.4
@@ -102,6 +167,8 @@ conda deactivate
 ###############################################################################
 #                                Run Kneaddata                                #
 ###############################################################################
+
+slurmLog "Running raw sequence read(s) through kneaddata..."
 
 # Activate kneaddata conda environment
 conda activate kneaddata-0.7.4
@@ -190,6 +257,8 @@ cd ..
 #                               Quality Control                               #
 ###############################################################################
 
+slurmLog "Running processed sequence read(s) through quality control..."
+
 # Activate QC conda environment
 conda activate kneaddata-0.7.4
 
@@ -213,6 +282,8 @@ if [ PIPELINE="kraken2" ]; then
  ###############################################################################
  #                                 Run kraken2                                 #
  ###############################################################################
+
+ slurmLog "Running processed sequence read(s) through kraken2..."
 
  # Activate kraken2 conda environment
  conda activate kraken2-2.1.2
@@ -248,6 +319,8 @@ if [ PIPELINE="kraken2" ]; then
  #############################################################################
  #                                Run bracken                                #
  #############################################################################
+
+ slurmLog "Running kraken2 reports through bracken..."
 
  conda activate kraken2-2.1.2
 
@@ -295,6 +368,8 @@ if [ PIPELINE="kraken2" ]; then
  #                                  Run krona                                  #
  ###############################################################################
 
+ slurmLog "Running kraken2 & bracken reports through krona..."
+
  # Activate krona conda environment
  conda activate krona-2.8
 
@@ -334,6 +409,8 @@ if [ PIPELINE="kraken2" ]; then
  #                                   Run biom                                  #
  ###############################################################################
 
+ slurmLog "Generating a biom file from bracken species reports..."
+
  # Activate biom conda environment
  conda activate kraken-biom-1.0.1
 
@@ -353,6 +430,9 @@ if [ PIPELINE="kraken2" ]; then
 
  # Generate biom format & summarize the results
  kraken-biom *.bracken -o sequences.biom --fmt json
+
+ slurmLog "Generating a biom file summary..."
+
  biom summarize-table -i sequences.biom -o sequences-summary.txt
 
  # Deactivate biom conda environment
@@ -377,6 +457,8 @@ elif [ PIPELINE="metaphlan" ]; then
  ###############################################################################
  #                                Run metaphlan                                #
  ###############################################################################
+
+ slurmLog "Running processed sequence read(s) through metaphlan..."
 
  # Activate metaphlan conda environment
  conda activate metaphlan-3.0.10
@@ -412,6 +494,8 @@ elif [ PIPELINE="metaphlan" ]; then
  #                                  Run krona                                  #
  ###############################################################################
 
+ slurmLog "Running metaphlan merged_abundance_table through krona..."
+
  # Activate krona conda environment
  conda activate krona-2.8
 
@@ -434,6 +518,8 @@ elif [ PIPELINE="metaphlan" ]; then
  ###############################################################################
  #                                 Run hclust2                                 #
  ###############################################################################
+
+ slurmLog "Running metaphlan results through hclust2 for abundance heatmapping for species..."
 
  # Activate hclust2 conda environment
  conda activate hclust2
