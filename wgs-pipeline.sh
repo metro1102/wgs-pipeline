@@ -59,7 +59,7 @@ errorLog() {
 
 if [ ! -z "$ROOT" ]; then
 
- initLog "Root directory has been specifed as '${ROOT}'..."
+ initLog "Root directory has been specified as '${ROOT}'..."
 
 elif [ -z "$ROOT" ]; then
 
