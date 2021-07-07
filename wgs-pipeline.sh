@@ -18,7 +18,8 @@ FRAGMENT_TYPE="paired" # Enter reads are "single" or "paired".
 PIPELINE="kraken2" # Enter your desired pipeline ("kraken2" or "metaphlan").
 
 # If using kraken2, please specify the database path to use.
-DATABASE="/labs/Microbiome/gtesto/databases/silva_138.1_SSU"
+KRAKEN2DB="/labs/Microbiome/gtesto/databases/silva_138.1_SSU"
+BOWTIE2DB="/labs/Microbiome/gtesto/databases/bowtie2"
 
 
 ###################### ! DO NOT EDIT BEYOND THIS POINT ! ######################
@@ -108,13 +109,23 @@ if [ PIPELINE="kraken2" ] || [ PIPELINE="metaphlan" ]; then
 
   slurmLog "Running the ${PIPELINE} workflow..."
 
-  # If using kraken2, verify if provided a database path
+  # If using kraken2, verify if required database path exists
 
-  if [ PIPELINE="kraken2" ] && [ -z "$DATABASE" ]; then
+  if [ PIPELINE="kraken2" ] && [ -z "$KRAKEN2DB" ]; then
 
     errorLog "Please provide a full path to your kraken2 database!"
 
     scancel $SLURM_JOBID
+
+  fi
+
+  # If using metaphlan, verify if required database path exists
+
+  if [ PIPELINE="metaphlan" ] && [ -z "$BOWTIE2DB" ]; then
+
+   errorLog "Please provide a full path to your metaphlan (bowtie2) database!"
+
+   scancel $SLURM_JOBID
 
   fi
 
@@ -299,7 +310,7 @@ if [ PIPELINE="kraken2" ]; then
  do
    filename=$(basename "$i");
    fname="${filename%_paired_*.fastq}";
-   kraken2 --db ${DATABASE} --threads 8 --use-names --output results/kraken2/${fname}_output.kraken --report reports/kraken2/${fname}_report.kraken --paired results/paired/${fname}_paired_1.fastq results/paired/${fname}_paired_2.fastq
+   kraken2 --db ${KRAKEN2DB} --threads 8 --use-names --output results/kraken2/${fname}_output.kraken --report reports/kraken2/${fname}_report.kraken --paired results/paired/${fname}_paired_1.fastq results/paired/${fname}_paired_2.fastq
  done
 
  elif [ FRAGMENT_TYPE="single" ]; then
@@ -308,7 +319,7 @@ if [ PIPELINE="kraken2" ]; then
  do
    filename=$(basename "$i");
    fname="${filename%*.fastq}";
-   kraken2 --db ${DATABASE} --threads 8 --use-names --output results/kraken2/${fname}_output.kraken --report reports/kraken2/${fname}_report.kraken results/single/${fname}.fastq
+   kraken2 --db ${KRAKEN2DB} --threads 8 --use-names --output results/kraken2/${fname}_output.kraken --report reports/kraken2/${fname}_report.kraken results/single/${fname}.fastq
  done
 
  fi
@@ -333,21 +344,21 @@ if [ PIPELINE="kraken2" ]; then
  do
    filename=$(basename "$i");
    fname="${filename%_report.kraken}";
-   bracken -d /labs/Microbiome/gtesto/databases/all_nucleotide -l S -i $i -o bracken/${fname}_species_output.bracken -w bracken/${fname}_species_report.bracken;
+   bracken -d ${KRAKEN2DB} -l S -i $i -o bracken/${fname}_species_output.bracken -w bracken/${fname}_species_report.bracken;
  done
 
  for i in *_report.kraken;
  do
    filename=$(basename "$i");
    fname="${filename%_report.kraken}";
-   bracken -d /labs/Microbiome/gtesto/databases/all_nucleotide -l G -i $i -o bracken/${fname}_genus_output.bracken -w bracken/${fname}_genus_report.bracken;
+   bracken -d ${KRAKEN2DB} -l G -i $i -o bracken/${fname}_genus_output.bracken -w bracken/${fname}_genus_report.bracken;
  done
 
  for i in *_report.kraken;
  do
    filename=$(basename "$i");
    fname="${filename%_report.kraken}";
-   bracken -d /labs/Microbiome/gtesto/databases/all_nucleotide -l P -i $i -o bracken/${fname}_phylum_output.bracken -w bracken/${fname}_phylum_report.bracken;
+   bracken -d ${KRAKEN2DB} -l P -i $i -o bracken/${fname}_phylum_output.bracken -w bracken/${fname}_phylum_report.bracken;
  done
 
  # This step is necessary, and we should combine outputs from kraken2 & bracken
@@ -472,7 +483,7 @@ elif [ PIPELINE="metaphlan" ]; then
  do
    filename=$(basename "$i")
    fname="${filename%_paired_*.fastq}";
-   metaphlan --bowtie2db /labs/Microbiome/gtesto/databases/bowtie2 results/paired/${fname}_paired_1.fastq,results/paired/${fname}_paired_2.fastq --input_type fastq --bowtie2out results/bowtie2/${fname}.bowtie2.bz2 -o reports/metaphlan/${fname}.txt
+   metaphlan --bowtie2db ${BOWTIE2DB} results/paired/${fname}_paired_1.fastq,results/paired/${fname}_paired_2.fastq --input_type fastq --bowtie2out results/bowtie2/${fname}.bowtie2.bz2 -o reports/metaphlan/${fname}.txt
  done
 
  cd reports/metaphlan
