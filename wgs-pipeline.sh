@@ -33,26 +33,17 @@ BOWTIE2DB="/labs/Microbiome/gtesto/databases/bowtie2"
 
 # Init Log (for initalization messages)
 initLog() {
-    BOLD="\e[1m"
-    CYAN="\e[96m"
-    RESET="\e[0m"
-    echo -e "$BOLD" "$CYAN" "$1" "$RESET"
+    echo -e "\e[37m""INIT - $1""\e[0m"
 }
 
 # Slurm Log (for task specific messages)
 slurmLog() {
-    BOLD="\e[1m"
-    GREEN="\e[32m"
-    RESET="\e[0m"
-    echo -e "$BOLD" "$GREEN" "$1" "$RESET"
+    echo -e "\e[36m""INFO - $1""\e[0m"
 }
 
 # Error log (for error messages)
 errorLog() {
-    BOLD="\e[1m"
-    RED="\e[91m"
-    RESET="\e[0m"
-    echo -e "$BOLD" "$RED" "$1" "$RESET"
+    echo -e "\e[91m""ERROR - $1""\e[0m"
 }
 
 # Verify Configuration ########################################################
