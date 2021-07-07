@@ -185,8 +185,7 @@ slurmLog "Running raw sequence read(s) through kneaddata..."
 conda activate kneaddata-0.7.4
 
 # Create output folder
-mkdir results
-mkdir results/kneaddata
+mkdir reports/kneaddata
 
 cd ../reads/${SAMPLE_TYPE}
 
@@ -230,15 +229,23 @@ fi
 cd ../../${SAMPLE_TYPE}
 
 # Output kneaddata report
-kneaddata_read_count_table \
-  --input results \
-  --output reports/kneaddata/reads_report.kneaddata
+kneaddata_read_count_table --input results --output reports/kneaddata/reads_report.kneaddata
 
 # Deactivate kneadddata conda environment
 conda deactivate
 
 # Clean up file structure
 cd results
+
+mkdir homo_sapien
+mkdir trimmomatic
+mkdir unmatched
+mkdir logs
+
+mv *Homo_sapiens* homo_sapien/.
+mv *trimmed* trimmomatic/.
+mv *unmatched* unmatched/.
+mv *log logs/.
 
 if [ FRAGMENT_TYPE="paired" ]; then
 
@@ -251,16 +258,6 @@ elif [ FRAGMENT_TYPE="single"]; then
   mv *.fastq single/
 
 fi
-
-mkdir homo_sapien
-mkdir trimmomatic
-mkdir unmatched
-mkdir logs
-
-mv *Homo_sapiens* homo_sapien/.
-mv *trimmed* trimmomatic/.
-mv *unmatched* unmatched/.
-mv *log logs/.
 
 cd ..
 
@@ -363,9 +360,9 @@ if [ PIPELINE="kraken2" ]; then
 
  # This step is necessary, and we should combine outputs from kraken2 & bracken
  # Because reads shouldn't be combined before processing, this step is important
- combine_bracken_outputs.py --files bracken/*species.bracken -o bracken/all_species_output.bracken
- combine_bracken_outputs.py --files bracken/*genus.bracken -o bracken/all_genus_output.bracken
- combine_bracken_outputs.py --files bracken/*phylum.bracken -o bracken/all_phylum_output.bracken
+ combine_bracken_outputs.py --files bracken/*species_output.bracken -o all_species_output.bracken
+ combine_bracken_outputs.py --files bracken/*genus_output.bracken -o bracken/all_genus_output.bracken
+ combine_bracken_outputs.py --files bracken/*phylum_output.bracken -o bracken/all_phylum_output.bracken
 
  mv *_output.bracken ../../../results/kraken2/bracken
  mv *all* ../../../results/kraken2/bracken
