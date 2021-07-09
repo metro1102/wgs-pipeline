@@ -23,28 +23,30 @@ for i in *_report.kraken;
 do
    filename=$(basename "$i");
    fname="${filename%_report.kraken}";
-   bracken -d ${KRAKEN2DB} -l S -i $i -o bracken/${fname}_species_output.bracken -w bracken/${fname}_species_report.bracken;
+   bracken -d ${KRAKEN2DB} -r ${BRACKEN_READ_LEN} -l S -i $i -o bracken/${fname}_species_output.bracken -w bracken/${fname}_species_report.bracken;
 done
 
 for i in *_report.kraken;
 do
    filename=$(basename "$i");
    fname="${filename%_report.kraken}";
-   bracken -d ${KRAKEN2DB} -l G -i $i -o bracken/${fname}_genus_output.bracken -w bracken/${fname}_genus_report.bracken;
+   bracken -d ${KRAKEN2DB} -r ${BRACKEN_READ_LEN} -l G -i $i -o bracken/${fname}_genus_output.bracken -w bracken/${fname}_genus_report.bracken;
 done
 
 for i in *_report.kraken;
 do
    filename=$(basename "$i");
    fname="${filename%_report.kraken}";
-   bracken -d ${KRAKEN2DB} -l P -i $i -o bracken/${fname}_phylum_output.bracken -w bracken/${fname}_phylum_report.bracken;
+   bracken -d ${KRAKEN2DB} -r ${BRACKEN_READ_LEN} -l P -i $i -o bracken/${fname}_phylum_output.bracken -w bracken/${fname}_phylum_report.bracken;
 done
 
 # This step is necessary, and we should combine outputs from kraken2 & bracken
 # Because reads shouldn't be combined before processing, this step is important
-combine_bracken_outputs.py --files bracken/*species_output.bracken -o all_species_output.bracken
+combine_bracken_outputs.py --files bracken/*species_output.bracken -o bracken/all_species_output.bracken
 combine_bracken_outputs.py --files bracken/*genus_output.bracken -o bracken/all_genus_output.bracken
 combine_bracken_outputs.py --files bracken/*phylum_output.bracken -o bracken/all_phylum_output.bracken
+
+cd bracken
 
 mv *_output.bracken ../../../results/kraken2/bracken
 mv *all* ../../../results/kraken2/bracken
@@ -52,4 +54,4 @@ mv *all* ../../../results/kraken2/bracken
 # Deactivate kraken2 conda environment
 conda deactivate
 
-cd ../../
+cd ../../../

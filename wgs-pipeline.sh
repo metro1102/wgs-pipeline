@@ -27,6 +27,12 @@ KNEADDATADB="/labs/Microbiome/gtesto/databases/kneaddata/human_genome"
 KRAKEN2DB="/labs/Microbiome/gtesto/databases/kraken2/silva_16S_SSU"
 BOWTIE2DB="/labs/Microbiome/gtesto/databases/humann/bowtie2"
 
+# BRACKEN #####################################################################
+
+BRACKEN_READ_LEN="150"              # ideal length of reads [default: 100]
+#BRACKEN_CLASSFICATION_LEVEL="S"     # taxonomic rank for analysis [default: S]
+#BRACKEN_THRESHOLD="10"              # number of reads for assignment [default: 10]
+
 
 ###################### ! DO NOT EDIT BEYOND THIS POINT ! ######################
 
@@ -62,6 +68,8 @@ export PIPELINE="$PIPELINE"
 export KNEADDATADB="$KNEADDATADB"
 export KRAKEN2DB="$KRAKEN2DB"
 export BOWTIE2DB="$BOWTIE2DB"
+
+export BRACKEN_READ_LEN="$BRACKEN_READ_LEN"
 
 export -f initLog
 export -f infoLog
@@ -306,6 +314,8 @@ unset PIPELINE
 unset KNEADDATADB
 unset KRAKEN2DB
 unset BOWTIE2DB
+
+unset BRACKEN_READ_LEN
 
 unset -f initLog
 unset -f infoLog
