@@ -20,12 +20,25 @@ cd reports/kraken2/bracken
 # Temporarily copy & rename bracken species reports
 mkdir temp
 
-for i in *_species_report.bracken
-do
-   filename=$(basename "$i")
-   fname="${filename%_species_report.bracken}";
-   cp ${filename} temp/${fname}.bracken
-done
+if [ $ANALYSIS = "WGS" ]; then
+
+   for i in *_species_report.bracken
+   do
+      filename=$(basename "$i")
+      fname="${filename%_species_report.bracken}";
+      cp ${filename} temp/${fname}.bracken
+   done
+
+elif [ $ANALYSIS = "16S" ]; then
+
+   for i in *_genus_report.bracken
+   do
+      filename=$(basename "$i")
+      fname="${filename%_species_report.bracken}";
+      cp ${filename} temp/${fname}.bracken
+   done
+
+fi
 
 cd temp
 

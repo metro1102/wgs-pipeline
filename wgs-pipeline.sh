@@ -21,6 +21,7 @@ PROJECT_NAME="clinical"             # Project name that you are working on.
 SAMPLE_TYPE="saliva"                # Sample type for your working reads.
 FRAGMENT_TYPE="paired"              # If reads are "single" or "paired".
 PIPELINE="kraken2"                  # Pipeline ("kraken2" or "metaphlan").
+ANALYSIS="16S"                      # Analysis ("WGS" or "16S").
 
 # If using kraken2 or metaphlan, please specify a database path to use.
 KNEADDATADB="/labs/Microbiome/gtesto/databases/kneaddata/human_genome"
@@ -64,6 +65,7 @@ export PROJECT_NAME="$PROJECT_NAME"
 export SAMPLE_TYPE="$SAMPLE_TYPE"
 export FRAGMENT_TYPE="$FRAGMENT_TYPE"
 export PIPELINE="$PIPELINE"
+export ANALYSIS="$ANALYSIS"
 
 export KNEADDATADB="$KNEADDATADB"
 export KRAKEN2DB="$KRAKEN2DB"
@@ -176,6 +178,20 @@ if [ PIPELINE="kraken2" ] || [ PIPELINE="metaphlan" ]; then
 elif [ -z "$PIPELINE" ]; then
 
     errorLog "Please set a desired pipeline ['kraken2' or 'metaphlan']!"
+
+    exit
+
+fi
+
+sleep 5
+
+if [ ANALYSIS="WGS" ] || [ ANALYSIS="16S" ]; then
+
+    infoLog "Running ${ANALYSIS} for downstream analyses..."
+
+elif [ -z "$ANALYSIS" ]; then
+
+    errorLog "Please set a desired downstream analysis ['WGS' or '16S']!"
 
     exit
 
@@ -310,6 +326,7 @@ unset PROJECT_NAME
 unset SAMPLE_TYPE
 unset FRAGMENT_TYPE
 unset PIPELINE
+unset ANALYSIS
 
 unset KNEADDATADB
 unset KRAKEN2DB

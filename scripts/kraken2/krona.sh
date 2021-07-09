@@ -33,12 +33,26 @@ done
 ktImportText ../krona/kraken2/*.krona -o ../krona/kraken2.krona.html
 
 cd bracken
-for i in *_species_report.bracken;
-do
-   filename=$(basename "$i")
-   fname="${filename%_species_report.bracken}";
-   python ${WGS}/scripts/dependencies/KrakenTools/kreport2krona.py -r ${filename} -o ../../krona/bracken/${fname}.krona;
-done
+
+if [ ANALYSIS="WGS" ]; then
+
+   for i in *_species_report.bracken
+   do
+      filename=$(basename "$i")
+      fname="${filename%_species_report.bracken}"
+      python ${WGS}/scripts/dependencies/KrakenTools/kreport2krona.py -r ${filename} -o ../../krona/bracken/${fname}.krona
+   done
+
+elif [ ANALYSIS="16S" ]; then
+
+   for i in *_genus_report.bracken
+   do
+      filename=$(basename "$i")
+      fname="${filename%_genus_report.bracken}"
+      python ${WGS}/scripts/dependencies/KrakenTools/kreport2krona.py -r ${filename} -o ../../krona/bracken/${fname}.krona
+   done
+
+fi
 
 ktImportText ../../krona/bracken/*.krona -o ../../krona/bracken.krona.html
 
