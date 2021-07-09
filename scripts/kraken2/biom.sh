@@ -34,7 +34,7 @@ elif [[ $ANALYSIS = "16S" ]]; then
    for i in *_genus_report.bracken
    do
       filename=$(basename "$i")
-      fname="${filename%_species_report.bracken}";
+      fname="${filename%_genus_report.bracken}";
       cp ${filename} temp/${fname}.bracken
    done
 
