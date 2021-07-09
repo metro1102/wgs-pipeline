@@ -135,7 +135,7 @@ fi
 
 sleep 5
 
-if [ FRAGMENT_TYPE="paired" ] || [ FRAGMENT_TYPE="single"]; then
+if [[ $FRAGMENT_TYPE = "paired" ]] || [[ $FRAGMENT_TYPE = "single" ]]; then
 
     infoLog "Running sequence read(s) in ${FRAGMENT_TYPE} end mode..."
 
@@ -149,7 +149,7 @@ fi
 
 sleep 5
 
-if [ PIPELINE="kraken2" ] || [ PIPELINE="metaphlan" ]; then
+if [[ $PIPELINE = "kraken2" ]] || [[ $PIPELINE = "metaphlan" ]]; then
 
     infoLog "Running the ${PIPELINE} workflow..."
 
@@ -157,7 +157,7 @@ if [ PIPELINE="kraken2" ] || [ PIPELINE="metaphlan" ]; then
 
     # If using kraken2, verify if required database path exists
 
-    if [ PIPELINE="kraken2" ] && [ -z "$KRAKEN2DB" ]; then
+    if [[ $PIPELINE = "kraken2" ]] && [[ -z "$KRAKEN2DB" ]]; then
 
         errorLog "Please provide a full path to your kraken2 database!"
 
@@ -167,7 +167,7 @@ if [ PIPELINE="kraken2" ] || [ PIPELINE="metaphlan" ]; then
 
     # If using metaphlan, verify if required database path exists
 
-    if [ PIPELINE="metaphlan" ] && [ -z "$BOWTIE2DB" ]; then
+    if [[ $PIPELINE = "metaphlan" ]] && [[ -z "$BOWTIE2DB" ]]; then
 
         errorLog "Please provide a full path to your metaphlan (bowtie2) database!"
 
@@ -185,7 +185,7 @@ fi
 
 sleep 5
 
-if [ ANALYSIS="WGS" ] || [ ANALYSIS="16S" ]; then
+if [[ $ANALYSIS = "WGS" ]] || [[ $ANALYSIS = "16S" ]]; then
 
     infoLog "Running ${ANALYSIS} for downstream analyses..."
 
@@ -237,7 +237,7 @@ prev_job=$(sbatch --wait --dependency=afterok:$prev_job ${WGS}/scripts/qc-clean.
 #                        Additional Pipeline Script(s)                        #
 ###############################################################################
 
-if [ PIPELINE="kraken2" ]; then
+if [[ $PIPELINE = "kraken2" ]]; then
 
     ###########################################################################
     #                               Run kraken2                               #
@@ -271,7 +271,7 @@ if [ PIPELINE="kraken2" ]; then
 
     prev_job=$(sbatch --wait --dependency=afterok:$prev_job ${WGS}/scripts/kraken2/biom.sh | sed 's/Submitted batch job //')
 
-elif [ PIPELINE="metaphlan" ]; then
+elif [[ $PIPELINE = "metaphlan" ]]; then
 
     ###########################################################################
     #                              Run metaphlan                              #

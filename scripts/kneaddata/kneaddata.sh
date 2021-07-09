@@ -21,7 +21,7 @@ mkdir reports/kneaddata
 cd ../reads/${SAMPLE_TYPE}
 
 # Run kneaddata on available sequence reads
-if [ FRAGMENT_TYPE="paired" ]; then
+if [[ $FRAGMENT_TYPE = "paired" ]]; then
   for i in *_R1_*.fastq.gz
   do
       filename=$(basename "$i");
@@ -39,7 +39,7 @@ if [ FRAGMENT_TYPE="paired" ]; then
         --max-memory 40g -p 8 -t 8 --output-prefix ${fname} \
         --output ${ROOT}${PROJECT_NAME}/${SAMPLE_TYPE}/results
   done
-elif [ FRAGMENT_TYPE="single"]; then
+elif [[ $FRAGMENT_TYPE = "single" ]]; then
   for i in *_R1_*.fastq.gz
   do
     filename=$(basename "$i")

@@ -34,7 +34,7 @@ ktImportText ../krona/kraken2/*.krona -o ../krona/kraken2.krona.html
 
 cd bracken
 
-if [ ANALYSIS="WGS" ]; then
+if [[ $ANALYSIS = "WGS" ]]; then
 
    for i in *_species_report.bracken
    do
@@ -43,7 +43,7 @@ if [ ANALYSIS="WGS" ]; then
       python ${WGS}/scripts/dependencies/KrakenTools/kreport2krona.py -r ${filename} -o ../../krona/bracken/${fname}.krona
    done
 
-elif [ ANALYSIS="16S" ]; then
+elif [[ $ANALYSIS = "16S" ]]; then
 
    for i in *_genus_report.bracken
    do

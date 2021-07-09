@@ -20,7 +20,7 @@ mkdir reports/kraken2
 mkdir results/kraken2
 
 # Run kraken2 on available reads
-if [ FRAGMENT_TYPE="paired" ]; then
+if [[ $FRAGMENT_TYPE = "paired" ]]; then
 
     for i in results/paired/*_paired_1.fastq;
     do
@@ -29,7 +29,7 @@ if [ FRAGMENT_TYPE="paired" ]; then
         kraken2 --db ${KRAKEN2DB} --threads 8 --use-names --output results/kraken2/${fname}_output.kraken --report reports/kraken2/${fname}_report.kraken --paired results/paired/${fname}_paired_1.fastq results/paired/${fname}_paired_2.fastq
     done
 
-elif [ FRAGMENT_TYPE="single" ]; then
+elif [[ $FRAGMENT_TYPE = "single" ]]; then
 
     for i in results/single/*.fastq
     do
