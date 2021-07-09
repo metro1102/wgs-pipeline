@@ -306,6 +306,7 @@ fi
 # Compile Logs ################################################################
 
 mkdir slurm
+mkdir slurm/archive
 
 mv *.out slurm
 mv ${WGS}/*.out ${ROOT}/${PROJECT_NAME}/${SAMPLE_TYPE}/slurm
@@ -314,6 +315,8 @@ cd slurm
 
 TODAY=$(date +"%Y%m%d")
 cat *.out > ${TODAY}-${SAMPLE_TYPE}.log | sed 's/\x1b\[[0-9;]*m//g'
+
+mv *.out archive
 
 cd ..
 
