@@ -39,7 +39,7 @@ if [[ $FRAGMENT_TYPE = "paired" ]]; then
         --trimmomatic-options="${TRIMMOMATIC_OPTIONS}" \
         --reference-db ${KNEADDATADB} \
         --max-memory 40g -p 8 -t 8 --output-prefix ${fname} \
-        --output ${PROJECTS}${PROJECT_NAME}/${SAMPLE_TYPE}/results
+        --output ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/results
   done
 elif [[ $FRAGMENT_TYPE = "single" ]]; then
   for i in *_R1_*.fastq.gz
@@ -56,7 +56,7 @@ elif [[ $FRAGMENT_TYPE = "single" ]]; then
         --trimmomatic-options="${TRIMMOMATIC_OPTIONS}" \
         --reference-db ${KNEADDATADB} \
         --max-memory 40g -p 8 -t 8 --output-prefix ${fname} \
-        --output ${PROJECTS}${PROJECT_NAME}/${SAMPLE_TYPE}/results
+        --output ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/results
   done
 fi
 
