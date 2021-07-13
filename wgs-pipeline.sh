@@ -10,72 +10,11 @@
 #SBATCH --time=120:00:00
 
 ###############################################################################
-#                                    Setup                                    #
-###############################################################################
-
-# Configure the following settings:
-WGS="/labs/Microbiome/gtesto/scripts/wgs-pipeline"   # Path for this program.
-
-ROOT="/scratch/gtesto/projects/"    # Root directory for your projects.
-PROJECT_NAME="clinical"             # Project name that you are working on.
-SAMPLE_TYPE="saliva"                # Sample type for your working reads.
-FRAGMENT_TYPE="paired"              # If reads are "single" or "paired".
-PIPELINE="kraken2"                  # Pipeline ("kraken2" or "metaphlan").
-ANALYSIS="16S"                      # Analysis ("WGS" or "16S").
-
-# If using kraken2 or metaphlan, please specify a database path to use.
-KNEADDATADB="/labs/Microbiome/gtesto/databases/kneaddata/human_genome"
-KRAKEN2DB="/labs/Microbiome/gtesto/databases/kraken2/silva_16S_SSU"
-BOWTIE2DB="/labs/Microbiome/gtesto/databases/humann/bowtie2"
-
-# BRACKEN #####################################################################
-
-BRACKEN_READ_LEN="150"              # ideal length of reads [default: 100]
-#BRACKEN_CLASSFICATION_LEVEL="S"     # taxonomic rank for analysis [default: S]
-#BRACKEN_THRESHOLD="10"              # number of reads for assignment [default: 10]
-
-
-###################### ! DO NOT EDIT BEYOND THIS POINT ! ######################
-
-
-###############################################################################
 #                                Initalization                                #
 ###############################################################################
 
-# Setup Logging ###############################################################
-
-initLog() { # Init Log (for initalization messages)
-    echo -e "\e[37m""INIT - $1""\e[0m"
-}
-
-infoLog() { # Info Log (for task specific messages)
-    echo -e "\e[36m""INFO - $1""\e[0m"
-}
-
-errorLog() { # Error log (for error messages)
-    echo -e "\e[91m""ERROR - $1""\e[0m"
-}
-
-# Setup Environment ###########################################################
-
-export WGS="$WGS"
-
-export ROOT="$ROOT"
-export PROJECT_NAME="$PROJECT_NAME"
-export SAMPLE_TYPE="$SAMPLE_TYPE"
-export FRAGMENT_TYPE="$FRAGMENT_TYPE"
-export PIPELINE="$PIPELINE"
-export ANALYSIS="$ANALYSIS"
-
-export KNEADDATADB="$KNEADDATADB"
-export KRAKEN2DB="$KRAKEN2DB"
-export BOWTIE2DB="$BOWTIE2DB"
-
-export BRACKEN_READ_LEN="$BRACKEN_READ_LEN"
-
-export -f initLog
-export -f infoLog
-export -f errorLog
+source config.sh
+source functions.sh
 
 # Check Setup #################################################################
 
@@ -93,11 +32,11 @@ fi
 
 sleep 5
 
-if [ ! -z "$ROOT" ]; then
+if [ ! -z "$PROJECTS" ]; then
 
-    initLog "Root directory has been specified as '${ROOT}'..."
+    initLog "Projects directory has been specified as '${PROJECTS}'..."
 
-elif [ -z "$ROOT" ]; then
+elif [ -z "$PROJECTS" ]; then
 
     errorLog "Please specify a root directory for your projects!"
 
@@ -139,6 +78,12 @@ if [[ $FRAGMENT_TYPE = "paired" ]] || [[ $FRAGMENT_TYPE = "single" ]]; then
 
     infoLog "Running sequence read(s) in ${FRAGMENT_TYPE} end mode..."
 
+elif [[ $FRAGMENT_TYPE != "paired" ]] || [[ $FRAGMENT_TYPE != "single" ]]; then
+
+    errorLog "Please specify if your reads are 'paired' or 'single' end!"
+
+    exit
+
 elif [ -z "$FRAGMENT_TYPE" ]; then
 
     errorLog "Please specify the type of reads that you have ['paired' or 'single']!"
@@ -175,6 +120,12 @@ if [[ $PIPELINE = "kraken2" ]] || [[ $PIPELINE = "metaphlan" ]]; then
 
     fi
 
+elif [[ $PIPELINE != "kraken2" ]] || [[ $PIPELINE != "metaphlan" ]]; then
+
+    errorLog "Please set your desired pipeline to 'kraken2' or 'metaphlan'!"
+
+    exit
+
 elif [ -z "$PIPELINE" ]; then
 
     errorLog "Please set a desired pipeline ['kraken2' or 'metaphlan']!"
@@ -189,6 +140,19 @@ if [[ $ANALYSIS = "WGS" ]] || [[ $ANALYSIS = "16S" ]]; then
 
     infoLog "Running ${ANALYSIS} for downstream analyses..."
 
+    if [[ $PIPELINE = "metaphlan" ]] && [[ $ANALYSIS = "16S" ]]; then
+
+        errorLog "Please set your desired downstream analysis to 'WGS'!"
+
+        exit
+    fi
+
+elif [[ $ANALYSIS != "WGS" ]] || [[ $ANALYSIS != "16S" ]]; then
+
+    errorLog "Please set your desired downstream analysis as 'WGS' or '16S'!"
+
+    exit
+
 elif [ -z "$ANALYSIS" ]; then
 
     errorLog "Please set a desired downstream analysis ['WGS' or '16S']!"
@@ -199,8 +163,7 @@ fi
 
 # Run Setup ###################################################################
 
-# Navigate to project and samples folder
-cd ${ROOT}${PROJECT_NAME}
+cd ${PROJECTS}/${PROJECT_NAME}
 
 mkdir ${SAMPLE_TYPE}
 
@@ -319,24 +282,3 @@ cat *.out > ${TODAY}-${SAMPLE_TYPE}.log | sed 's/\x1b\[[0-9;]*m//g'
 mv *.out archive
 
 cd ..
-
-# Disassemble Environment #####################################################
-
-unset WGS
-
-unset ROOT
-unset PROJECT_NAME
-unset SAMPLE_TYPE
-unset FRAGMENT_TYPE
-unset PIPELINE
-unset ANALYSIS
-
-unset KNEADDATADB
-unset KRAKEN2DB
-unset BOWTIE2DB
-
-unset BRACKEN_READ_LEN
-
-unset -f initLog
-unset -f infoLog
-unset -f errorLog

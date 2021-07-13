@@ -9,6 +9,10 @@
 #SBATCH --mem-per-cpu=5G
 #SBATCH --time=48:00:00
 
+# Load source(s)
+source "../../config.sh"
+source "../../functions.sh"
+
 # Initate bash shell using conda
 source ~/.bashrc
 
@@ -33,8 +37,8 @@ if [[ $FRAGMENT_TYPE = "paired" ]]; then
       kneaddata \
         --input ${fname}_${barcode}_${lane}_R1_${set}.fastq.gz \
         --input ${fname}_${barcode}_${lane}_R2_${set}.fastq.gz \
-        --trimmomatic /labs/Microbiome/gtesto/miniconda3/envs/kneaddata-0.7.4/share/trimmomatic-0.39-2 \
-        --trimmomatic-options="ILLUMINACLIP:/scratch/gtesto/adapters/illumina_adapters_DNA.fasta:2:25:10 SLIDINGWINDOW:4:15 MINLEN:100" \
+        --trimmomatic ${TRIMMOMATIC} \
+        --trimmomatic-options="${TRIMMOMATIC_OPTIONS}" \
         --reference-db ${KNEADDATADB} \
         --max-memory 40g -p 8 -t 8 --output-prefix ${fname} \
         --output ${ROOT}${PROJECT_NAME}/${SAMPLE_TYPE}/results
@@ -50,7 +54,8 @@ elif [[ $FRAGMENT_TYPE = "single" ]]; then
     set="$(echo "$filename" | sed -e "s/${fname}_${barcode}_${lane}_${direction}_\(.*\).fastq.gz*/\1/")";
     kneaddata \
       --input ${fname}_${barcode}_${lane}_R1_${set}.fastq.gz \
-        --trimmomatic-options="ILLUMINACLIP:/scratch/gtesto/adapters/illumina_adapters_DNA.fasta:2:25:10 SLIDINGWINDOW:4:15 MINLEN:100" \
+        --trimmomatic ${TRIMMOMATIC} \
+        --trimmomatic-options="${TRIMMOMATIC_OPTIONS}" \
         --reference-db ${KNEADDATADB} \
         --max-memory 40g -p 8 -t 8 --output-prefix ${fname} \
         --output ${ROOT}${PROJECT_NAME}/${SAMPLE_TYPE}/results

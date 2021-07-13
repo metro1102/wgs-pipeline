@@ -9,6 +9,10 @@
 #SBATCH --mem-per-cpu=2G
 #SBATCH --time=00:30:00
 
+# Load source(s)
+source "../config.sh"
+source "../functions.sh"
+
 # Initate bash shell using conda
 source ~/.bashrc
 
