@@ -6,22 +6,24 @@
 
 # General Settings ############################################################
 
-ROOT="/labs/Microbiome/gtesto"      # Root directory for all of your tools..
-PROJECTS="/scratch/gtesto/projects" # Projects directory for your projects.
-PROJECT_NAME="clinical"             # Project name that you are working on.
-SAMPLE_TYPE="saliva"                # Sample type for your working reads.
-FRAGMENT_TYPE="paired"              # If reads are "single" or "paired".
+ROOT=""      # Root directory for all of your tools..
+PROJECTS="" # Projects directory for your projects.
+PROJECT_NAME=""             # Project name that you are working on.
+SAMPLE_TYPE=""                # Sample type for your working reads.
+FRAGMENT_TYPE=""              # If reads are "single" or "paired".
 
-PIPELINE="kraken2"                  # Pipeline ("kraken2" or "metaphlan").
-ANALYSIS="16S"                      # Analysis ("WGS" or "16S").
+PIPELINE=""                  # Pipeline ("kraken2" or "metaphlan").
+ANALYSIS=""                      # Analysis ("WGS" or "16S").
 
-# Do NOT include a forward slash at the end of paths when setting directories.
+# Do NOT include a forward slash at the end of paths when setting directories!
 
 # Database Settings ###########################################################
 
-KNEADDATADB="${ROOT}/databases/kneaddata/human_genome"
-KRAKEN2DB="${ROOT}/databases/kraken2/silva_16S_SSU"
-BOWTIE2DB="${ROOT}/databases/humann/bowtie2"
+KNEADDATADB="${ROOT}/databases/kneaddata/"
+KRAKEN2DB="${ROOT}/databases/kraken2/"
+BOWTIE2DB="${ROOT}/databases/humann/"
+
+# Make sure to ADD the database paths that you wish to use!
 
 # Customization ###############################################################
 

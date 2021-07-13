@@ -1,8 +1,6 @@
 #!/bin/bash
 
 #SBATCH --job-name=qc-raw
-#SBATCH --mail-user=gtesto@tgen.org
-#SBATCH --mail-type=END,FAIL
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8

@@ -1,9 +1,6 @@
 #!/bin/bash
 
 #SBATCH --job-name=metaphlan
-#SBATCH --output=slurm/slurm-%J.out
-#SBATCH --mail-user=gtesto@tgen.org
-#SBATCH --mail-type=END,FAIL
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
