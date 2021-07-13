@@ -29,7 +29,7 @@ for i in *_report.kraken;
 do
    filename=$(basename "$i");
    fname="${filename%_report.kraken}";
-   python ${WGS}/scripts/dependencies/KrakenTools/kreport2krona.py -r ${filename} -o ../krona/kraken2/${fname}.krona;
+   python ${WGS}/apps/dependencies/KrakenTools/kreport2krona.py -r ${filename} -o ../krona/kraken2/${fname}.krona;
 done
 
 ktImportText ../krona/kraken2/*.krona -o ../krona/kraken2.krona.html
@@ -42,7 +42,7 @@ if [[ $ANALYSIS = "WGS" ]]; then
    do
       filename=$(basename "$i")
       fname="${filename%_species_report.bracken}"
-      python ${WGS}/scripts/dependencies/KrakenTools/kreport2krona.py -r ${filename} -o ../../krona/bracken/${fname}.krona
+      python ${WGS}/apps/dependencies/KrakenTools/kreport2krona.py -r ${filename} -o ../../krona/bracken/${fname}.krona
    done
 
 elif [[ $ANALYSIS = "16S" ]]; then
@@ -51,7 +51,7 @@ elif [[ $ANALYSIS = "16S" ]]; then
    do
       filename=$(basename "$i")
       fname="${filename%_genus_report.bracken}"
-      python ${WGS}/scripts/dependencies/KrakenTools/kreport2krona.py -r ${filename} -o ../../krona/bracken/${fname}.krona
+      python ${WGS}/apps/dependencies/KrakenTools/kreport2krona.py -r ${filename} -o ../../krona/bracken/${fname}.krona
    done
 
 fi
