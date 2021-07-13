@@ -166,8 +166,9 @@ export WGS=${WGS}
 cd ${PROJECTS}/${PROJECT_NAME}
 
 mkdir ${SAMPLE_TYPE}
+mkdir ${SAMPLE_TYPE}/${ANALYSIS}
 
-cd ${SAMPLE_TYPE}
+cd ${SAMPLE_TYPE}/${ANALYSIS}
 
 mkdir results
 mkdir reports
@@ -272,7 +273,7 @@ mkdir slurm
 mkdir slurm/archive
 
 mv *.out slurm
-mv ${WGS}/*.out ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/slurm
+mv ${WGS}/*.out ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}/slurm
 
 cd slurm
 
