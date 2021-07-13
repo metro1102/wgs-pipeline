@@ -11,8 +11,8 @@
 #SBATCH --time=72:00:00
 
 # Load source(s)
-source "../../config.sh"
-source "../../functions.sh"
+source "${WGS}/config.sh"
+source "${WGS}/functions.sh"
 
 # Initate bash shell using conda
 source ~/.bashrc
