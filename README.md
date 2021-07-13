@@ -23,6 +23,6 @@ Before contributing, please consider reading the below guidelines. These guideli
 ## License(s)
 GNU General Public License v3.0
 
-## Citations
+## Citation(s)
 If you plan on using WGS Pipeline for potential publications, please include the following citation:
 > WGS Pipeline (simplified microbiome analyses). (2021). https://github.com/metro1102/wgs-pipeline
