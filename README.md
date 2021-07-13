@@ -1,5 +1,7 @@
 # WGS Pipeline (simplified microbiome analyses)
 
+Custom SLURM scripts built in collaboration with the TGen Microbiome Service Center.
+
 ## Project Information
 Next-generation sequencing (NGS) has become a powerful tool for human microbiome research. Researchers, now, have the ability to isolate bacterial DNA from clinical microbiome samples while utilizing popular and streamlined approaches for obtaining high-quality sequence reads from high throughput sequencing platforms such as [Illumina](https://www.illumina.com), [Ion torrent](https://www.thermofisher.com/us/en/home/brands/ion-torrent.html), and [PacBio](https://www.pacb.com/smrt-science/smrt-sequencing/). As NGS technology is constantly evolving, translational clinical research is becoming easier to perform [(Beigh, 2016)](https://dx.doi.org/10.3390%2Fmedicines3020014). For example, molecular biologists can focus more on their research, rather than on NGS procedures.
 
@@ -20,3 +22,7 @@ Before contributing, please consider reading the below guidelines. These guideli
 
 ## License(s)
 GNU General Public License v3.0
+
+## Citations
+If you plan on using WGS Pipeline for potential publications, please include the following citation:
+> WGS Pipeline (simplified microbiome analyses). (2021). https://github.com/metro1102/wgs-pipeline
