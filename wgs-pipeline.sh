@@ -278,9 +278,9 @@ mv ${WGS}/slurm-$SLURM_JOB_ID.out ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${A
 cd slurm
 
 TODAY=$(date +"%Y%m%d")
-cat *.out > ${TODAY}-${SAMPLE_TYPE}-${ANALYSIS}.log | sed 's/\x1b\[[0-9;]*m//g'
+cat *.out > ${TODAY}-${ANALYSIS}-${SAMPLE_TYPE}.log | sed 's/\x1b\[[0-9;]*m//g'
 
-mv *.out archive
+mv *.out outputs
 
 cd ..
 

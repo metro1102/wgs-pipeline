@@ -37,7 +37,7 @@ grep -E "s__|clade" merged_abundance_table.txt | sed 's/^.*s__//g'\
     | cut -f1,3-8 | sed -e 's/clade_name/SampleID/g' > merged_abundance_table_species.txt
 
 # Move & rename merged_abundance_table_species
-mv merged_abundance_table_species.txt ../../${SAMPLE_TYPE}-metaphlan-results.txt
+mv merged_abundance_table_species.txt ../../${ANALYSIS}-${SAMPLE_TYPE}-metaphlan-results.txt
 
 # Deactivate metaphlan conda environment
 conda deactivate

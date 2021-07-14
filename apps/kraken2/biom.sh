@@ -65,5 +65,5 @@ cd ../../../
 
 # Rename biom files to sample type
 #mkdir results/biom
-mv sequences.biom ${SAMPLE_TYPE}-bracken-results.biom
-mv sequences-summary.txt ${SAMPLE_TYPE}-bracken-summary.txt
+mv sequences.biom ${ANALYSIS}-${SAMPLE_TYPE}-bracken-results.biom
+mv sequences-summary.txt ${ANALYSIS}-${SAMPLE_TYPE}-bracken-summary.txt
