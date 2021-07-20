@@ -92,6 +92,26 @@ fi
 
 sleep 5
 
+if [[ $TRIMMING = "kneaddata" ]] || [[ $TRIMMING = "trimmomatic" ]]; then
+
+    infoLog "Using ${TRIMMING} for sequence read trimming..."
+
+elif [[ $TRIMMING != "kneaddata" ]] || [[ $TRIMMING != "trimmomatic" ]]; then
+
+    errorLog "Please set your desired trimmer to 'kneaddata' or 'trimmomatic'!"
+
+    exit
+
+elif [ -z "$TRIMMING" ]; then
+
+    errorLog "Please set a desired trimmer ['kneaddata' or 'trimmomatic']!"
+
+    exit
+
+fi
+
+sleep 5
+
 if [[ $PIPELINE = "kraken2" ]] || [[ $PIPELINE = "metaphlan" ]]; then
 
     infoLog "Running the ${PIPELINE} workflow..."
@@ -181,13 +201,27 @@ infoLog "Running raw sequence read(s) through quality control..."
 
 prev_job=$(sbatch --wait ${WGS}/apps/qc-raw.sh | sed 's/Submitted batch job //')
 
-###############################################################################
-#                                Run kneaddata                                #
-###############################################################################
+if [[ $TRIMMING = "kneaddata" ]]; then
 
-infoLog "Running raw sequence read(s) through kneaddata..."
+    ###########################################################################
+    #                              Run kneaddata                              #
+    ###########################################################################
 
-prev_job=$(sbatch --wait --dependency=afterok:$prev_job ${WGS}/apps/kneaddata/kneaddata.sh | sed 's/Submitted batch job //')
+    infoLog "Running raw sequence read(s) through kneaddata..."
+
+    prev_job=$(sbatch --wait --dependency=afterok:$prev_job ${WGS}/apps/kneaddata/kneaddata.sh | sed 's/Submitted batch job //')
+
+elif [[ $TRIMMING = "trimmomatic" ]]; then
+
+    ###########################################################################
+    #                             Run trimmomatic                             #
+    ###########################################################################
+
+    infoLog "Running raw sequence read(s) through trimmomatic..."
+
+    prev_job=$(sbatch --wait --dependency=afterok:$prev_job ${WGS}/apps/kneaddata/trimmomatic.sh | sed 's/Submitted batch job //')
+
+fi
 
 ###############################################################################
 #                           Quality Control (CLEAN)                           #

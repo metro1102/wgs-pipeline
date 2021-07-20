@@ -12,6 +12,7 @@ PROJECT_NAME=""             # Project name that you are working on.
 SAMPLE_TYPE=""                # Sample type for your working reads.
 FRAGMENT_TYPE=""              # If reads are "single" or "paired".
 
+TRIMMING=""                  # Trimming ("kneaddata" or "trimmomatic").
 PIPELINE=""                  # Pipeline ("kraken2" or "metaphlan").
 ANALYSIS=""                      # Analysis ("WGS" or "16S").
 
