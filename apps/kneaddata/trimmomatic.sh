@@ -33,7 +33,7 @@ if [[ $FRAGMENT_TYPE = "paired" ]]; then
         ${fname}_${barcode}_${lane}_R1_${set}.fastq.gz ${fname}_${barcode}_${lane}_R2_${set}.fastq.gz \
         ${fname}.trimmed.1.fastq ${fname}.trimmed.2.fastq \
         ${fname}_unmatched_1.fastq ${fname}_unmatched_2.fastq \
-        ILLUMINACLIP:${ADAPTERS}:2:25:10 SLIDINGWINDOW:4:15 MINLEN:100
+        ${TRIMMOMATIC_OPTIONS}
   done
 elif [[ $FRAGMENT_TYPE = "single" ]]; then
   for i in *_R1_*.fastq.gz
@@ -48,9 +48,12 @@ elif [[ $FRAGMENT_TYPE = "single" ]]; then
         ${fname}_${barcode}_${lane}_R1_${set}.fastq.gz \
         ${fname}.trimmed.1.fastq \
         ${fname}_unmatched_1.fastq \
-        ILLUMINACLIP:${ADAPTERS}:2:25:10 SLIDINGWINDOW:4:15 MINLEN:100
+        ${TRIMMOMATIC_OPTIONS}
   done
 fi
+
+mv *.fastq ../../${SAMPLE_TYPE}/${ANALYSIS}/results
+mv *.log ../../${SAMPLE_TYPE}/${ANALYSIS}/results
 
 cd ../../${SAMPLE_TYPE}/${ANALYSIS}
 
