@@ -12,6 +12,7 @@ PROJECT_NAME=""             # Project name that you are working on.
 SAMPLE_TYPE=""                # Sample type for your working reads.
 FRAGMENT_TYPE=""              # If reads are "single" or "paired".
 
+TRIMMING=""                  # Trimming ("kneaddata" or "trimmomatic").
 PIPELINE=""                  # Pipeline ("kraken2" or "metaphlan").
 ANALYSIS=""                      # Analysis ("WGS" or "16S").
 
@@ -35,6 +36,6 @@ TRIMMOMATIC="${ROOT}/miniconda3/envs/kneaddata-0.7.4/share/trimmomatic-0.39-2"
 
 ############################### ! DO NOT EDIT ! ###############################
 
-TRIMMMATIC_OPTIONS="ILLUMINACLIP:${ADAPTERS}:2:25:10 SLIDINGWINDOW:4:15 MINLEN:100"
+TRIMMOMATIC_OPTIONS="ILLUMINACLIP:${ADAPTERS}:2:25:10 SLIDINGWINDOW:4:15 MINLEN:100"
 
 BRACKEN_READ_LEN="100"              # ideal length of reads [default: 100]

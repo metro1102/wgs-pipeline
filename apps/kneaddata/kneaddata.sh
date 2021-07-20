@@ -20,7 +20,7 @@ conda activate kneaddata-0.7.4
 # Create output folder
 mkdir reports/kneaddata
 
-cd ../reads/${SAMPLE_TYPE}
+cd ../../reads/${SAMPLE_TYPE}
 
 # Run kneaddata on available sequence reads
 if [[ $FRAGMENT_TYPE = "paired" ]]; then
@@ -36,10 +36,10 @@ if [[ $FRAGMENT_TYPE = "paired" ]]; then
         --input ${fname}_${barcode}_${lane}_R1_${set}.fastq.gz \
         --input ${fname}_${barcode}_${lane}_R2_${set}.fastq.gz \
         --trimmomatic ${TRIMMOMATIC} \
-        --trimmomatic-options="${TRIMMOMATIC_OPTIONS}" \
+        --trimmomatic-options="${TRIMMMATIC_OPTIONS}" \
         --reference-db ${KNEADDATADB} \
         --max-memory 40g -p 8 -t 8 --output-prefix ${fname} \
-        --output ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/results
+        --output ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}/results
   done
 elif [[ $FRAGMENT_TYPE = "single" ]]; then
   for i in *_R1_*.fastq.gz
@@ -53,14 +53,14 @@ elif [[ $FRAGMENT_TYPE = "single" ]]; then
     kneaddata \
       --input ${fname}_${barcode}_${lane}_R1_${set}.fastq.gz \
         --trimmomatic ${TRIMMOMATIC} \
-        --trimmomatic-options="${TRIMMOMATIC_OPTIONS}" \
+        --trimmomatic-options="${TRIMMMATIC_OPTIONS}" \
         --reference-db ${KNEADDATADB} \
         --max-memory 40g -p 8 -t 8 --output-prefix ${fname} \
-        --output ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/results
+        --output ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}/results
   done
 fi
 
-cd ../../${SAMPLE_TYPE}
+cd ../../${SAMPLE_TYPE}/${ANALYSIS}
 
 # Output kneaddata report
 kneaddata_read_count_table --input results --output reports/kneaddata/reads_report.kneaddata

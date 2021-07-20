@@ -92,6 +92,26 @@ fi
 
 sleep 5
 
+if [[ $TRIMMING = "kneaddata" ]] || [[ $TRIMMING = "trimmomatic" ]]; then
+
+    infoLog "Using ${TRIMMING} for sequence read trimming..."
+
+elif [[ $TRIMMING != "kneaddata" ]] || [[ $TRIMMING != "trimmomatic" ]]; then
+
+    errorLog "Please set your desired trimmer to 'kneaddata' or 'trimmomatic'!"
+
+    exit
+
+elif [ -z "$TRIMMING" ]; then
+
+    errorLog "Please set a desired trimmer ['kneaddata' or 'trimmomatic']!"
+
+    exit
+
+fi
+
+sleep 5
+
 if [[ $PIPELINE = "kraken2" ]] || [[ $PIPELINE = "metaphlan" ]]; then
 
     infoLog "Running the ${PIPELINE} workflow..."
@@ -166,8 +186,9 @@ export WGS=${WGS}
 cd ${PROJECTS}/${PROJECT_NAME}
 
 mkdir ${SAMPLE_TYPE}
+mkdir ${SAMPLE_TYPE}/${ANALYSIS}
 
-cd ${SAMPLE_TYPE}
+cd ${SAMPLE_TYPE}/${ANALYSIS}
 
 mkdir results
 mkdir reports
@@ -180,13 +201,27 @@ infoLog "Running raw sequence read(s) through quality control..."
 
 prev_job=$(sbatch --wait ${WGS}/apps/qc-raw.sh | sed 's/Submitted batch job //')
 
-###############################################################################
-#                                Run kneaddata                                #
-###############################################################################
+if [[ $TRIMMING = "kneaddata" ]]; then
 
-infoLog "Running raw sequence read(s) through kneaddata..."
+    ###########################################################################
+    #                              Run kneaddata                              #
+    ###########################################################################
 
-prev_job=$(sbatch --wait --dependency=afterok:$prev_job ${WGS}/apps/kneaddata/kneaddata.sh | sed 's/Submitted batch job //')
+    infoLog "Running raw sequence read(s) through kneaddata..."
+
+    prev_job=$(sbatch --wait --dependency=afterok:$prev_job ${WGS}/apps/kneaddata/kneaddata.sh | sed 's/Submitted batch job //')
+
+elif [[ $TRIMMING = "trimmomatic" ]]; then
+
+    ###########################################################################
+    #                             Run trimmomatic                             #
+    ###########################################################################
+
+    infoLog "Running raw sequence read(s) through trimmomatic..."
+
+    prev_job=$(sbatch --wait --dependency=afterok:$prev_job ${WGS}/apps/kneaddata/trimmomatic.sh | sed 's/Submitted batch job //')
+
+fi
 
 ###############################################################################
 #                           Quality Control (CLEAN)                           #
@@ -272,14 +307,14 @@ mkdir slurm
 mkdir slurm/archive
 
 mv *.out slurm
-mv ${WGS}/*.out ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/slurm
+mv ${WGS}/slurm-$SLURM_JOB_ID.out ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}/slurm
 
 cd slurm
 
 TODAY=$(date +"%Y%m%d")
-cat *.out > ${TODAY}-${SAMPLE_TYPE}.log | sed 's/\x1b\[[0-9;]*m//g'
+cat *.out > ${TODAY}-${ANALYSIS}-${SAMPLE_TYPE}.log | sed 's/\x1b\[[0-9;]*m//g'
 
-mv *.out archive
+mv *.out outputs
 
 cd ..
 
