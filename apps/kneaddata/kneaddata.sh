@@ -36,7 +36,7 @@ if [[ $FRAGMENT_TYPE = "paired" ]]; then
         --input ${fname}_${barcode}_${lane}_R1_${set}.fastq.gz \
         --input ${fname}_${barcode}_${lane}_R2_${set}.fastq.gz \
         --trimmomatic ${TRIMMOMATIC} \
-        --trimmomatic-options="${TRIMMMATIC_OPTIONS}" \
+        --trimmomatic-options="${TRIMMOMATIC_OPTIONS}" \
         --reference-db ${KNEADDATADB} \
         --max-memory 40g -p 8 -t 8 --output-prefix ${fname} \
         --output ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}/results
@@ -53,7 +53,7 @@ elif [[ $FRAGMENT_TYPE = "single" ]]; then
     kneaddata \
       --input ${fname}_${barcode}_${lane}_R1_${set}.fastq.gz \
         --trimmomatic ${TRIMMOMATIC} \
-        --trimmomatic-options="${TRIMMMATIC_OPTIONS}" \
+        --trimmomatic-options="${TRIMMOMATIC_OPTIONS}" \
         --reference-db ${KNEADDATADB} \
         --max-memory 40g -p 8 -t 8 --output-prefix ${fname} \
         --output ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}/results
