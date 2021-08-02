@@ -38,7 +38,14 @@ conda install -y kraken2
 conda install -y bracken
 conda deactivate
 
-infoLog "Installing humann + metaphlan ..."
+infoLog "Installing metaphlan ..."
+conda create -y -n metaphlan-3.0.10
+conda install metaphlan
+conda install -c conda-forge/label/cf202003 tbb
+metaphlan --install --bowtiedb ${ROOT}/databases/humann/bowtie2
+conda deactivate
+
+infoLog "Installing humann"
 conda create -y -n humann
 conda install -y -c bioconda humann
 conda deactivate
