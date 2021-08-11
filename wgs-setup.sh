@@ -22,7 +22,7 @@ rm Miniconda3-py39_4.10.3-Linux-x86_64.sh
 
 infoLog "Installing qiime2 ..."
 wget https://data.qiime2.org/distro/core/qiime2-2021.4-py38-linux-conda.yml
-conda create -n qiime2-2021.4 --file qiime2-2021.4-py38-linux-conda.yml
+conda env create -n qiime2-2021.4 --file qiime2-2021.4-py38-linux-conda.yml
 conda deactivate
 rm qiime2-2021.4-py38-linux-conda.yml
 
