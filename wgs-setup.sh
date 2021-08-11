@@ -28,13 +28,13 @@ prev_job=$(sbatch --wait -D ${WGS}/setup ${WGS}/setup/install-adapters.sh | sed 
 
 mkdir ${ROOT}/databases
 
-prev_job=$(sbatch --wait -D ${WGS}/setup/ ${WGS}/setup/install-miniconda3.sh | sed 's/Submitted batch job //')
-prev_job=$(sbatch --wait -D ${WGS}/setup/ ${WGS}/setup/install-qiime2.sh | sed 's/Submitted batch job //')
-prev_job=$(sbatch --wait -D ${WGS}/setup/ ${WGS}/setup/install-kneaddata.sh | sed 's/Submitted batch job //')
-prev_job=$(sbatch --wait -D ${WGS}/setup/ ${WGS}/setup/install-kraken2.sh | sed 's/Submitted batch job //')
-prev_job=$(sbatch --wait -D ${WGS}/setup/ ${WGS}/setup/install-humann.sh | sed 's/Submitted batch job //')
-prev_job=$(sbatch --wait -D ${WGS}/setup/ ${WGS}/setup/install-krona.sh | sed 's/Submitted batch job //')
-prev_job=$(sbatch --wait -D ${WGS}/setup/ ${WGS}/setup/install-biom.sh | sed 's/Submitted batch job //')
+#prev_job=$(sbatch --wait -D ${WGS}/setup/ ${WGS}/setup/install-miniconda3.sh | sed 's/Submitted batch job //')
+#prev_job=$(sbatch -D ${WGS}/setup/ ${WGS}/setup/install-qiime2.sh | sed 's/Submitted batch job //')
+prev_job=$(sbatch -D ${WGS}/setup/ ${WGS}/setup/install-kneaddata.sh | sed 's/Submitted batch job //')
+prev_job=$(sbatch -D ${WGS}/setup/ ${WGS}/setup/install-kraken2.sh | sed 's/Submitted batch job //')
+prev_job=$(sbatch -D ${WGS}/setup/ ${WGS}/setup/install-humann.sh | sed 's/Submitted batch job //')
+prev_job=$(sbatch -D ${WGS}/setup/ ${WGS}/setup/install-krona.sh | sed 's/Submitted batch job //')
+prev_job=$(sbatch -D ${WGS}/setup/ ${WGS}/setup/install-biom.sh | sed 's/Submitted batch job //')
 
 ###############################################################################
 #                                 Setup Scripts                               #
@@ -42,4 +42,4 @@ prev_job=$(sbatch --wait -D ${WGS}/setup/ ${WGS}/setup/install-biom.sh | sed 's/
 
 mkdir ${ROOT}/scripts
 
-prev_job=$(sbatch --wait -D ${WGS}/ ${WGS}/setup/install-scripts.sh | sed 's/Submitted batch job //')
+prev_job=$(sbatch -D ${WGS}/ ${WGS}/setup/install-scripts.sh | sed 's/Submitted batch job //')
