@@ -35,6 +35,7 @@ prev_job=$(sbatch -D ${WGS}/setup/ ${WGS}/setup/install-kraken2.sh | sed 's/Subm
 prev_job=$(sbatch -D ${WGS}/setup/ ${WGS}/setup/install-humann.sh | sed 's/Submitted batch job //')
 prev_job=$(sbatch -D ${WGS}/setup/ ${WGS}/setup/install-krona.sh | sed 's/Submitted batch job //')
 prev_job=$(sbatch -D ${WGS}/setup/ ${WGS}/setup/install-biom.sh | sed 's/Submitted batch job //')
+prev_job=$(sbatch -D ${WGS}/setup/ ${WGS}/setup/install-hclust2.sh | sed 's/Submitted batch job //')
 
 ###############################################################################
 #                                 Setup Scripts                               #
