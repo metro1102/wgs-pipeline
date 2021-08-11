@@ -50,6 +50,16 @@ conda create -y -n humann
 conda install -y -c bioconda humann
 conda deactivate
 
+infoLog "Installing krona ..."
+conda create -y -n krona && conda activate krona
+conda install -y -c bioconda krona
+conda deactivate
+
+infoLog "Installing biom ..."
+conda create -y -n biom && conda activate biom
+conda install -c bioconda kraken-biom
+conda deactivate
+
 ###############################################################################
 #                                Setup Adapters                               #
 ###############################################################################
