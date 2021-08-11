@@ -12,13 +12,13 @@ source functions.sh
 ###############################################################################
 
 infoLog "Installing miniconda 3 ..."
-wget https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-Linux-x86_64.sh
-bash Miniconda3-py39_4.9.2-Linux-x86_64.sh -b -p ${ROOT}/miniconda3
+wget https://repo.anaconda.com/miniconda/Miniconda3-py39_4.10.3-Linux-x86_64.sh
+bash Miniconda3-py39_4.10.3-Linux-x86_64.sh -b -p ${ROOT}/miniconda3
 eval "$($ROOT/miniconda3/bin/conda shell.bash hook)"
 conda init
 conda config --add channels bioconda
 conda config --add channels conda-forge
-rm Miniconda3-py39_4.9.2-Linux-x86_64.sh
+rm Miniconda3-py39_4.10.3-Linux-x86_64.sh
 
 infoLog "Installing qiime2 ..."
 wget https://data.qiime2.org/distro/core/qiime2-2021.4-py38-linux-conda.yml
