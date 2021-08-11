@@ -14,7 +14,7 @@ source "${WGS}/functions.sh"
 # Initate bash shell using conda
 source ~/.bashrc
 
-conda activate kraken2-2.1.2
+conda activate kraken2
 
 mkdir results/kraken2/bracken
 mkdir reports/kraken2/bracken

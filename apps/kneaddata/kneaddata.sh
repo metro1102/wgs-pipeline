@@ -15,7 +15,7 @@ source "${WGS}/functions.sh"
 source ~/.bashrc
 
 # Activate kneaddata conda environment
-conda activate kneaddata-0.7.4
+conda activate kneaddata
 
 # Create output folder
 mkdir reports/kneaddata

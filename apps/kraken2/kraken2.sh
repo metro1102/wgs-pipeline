@@ -15,7 +15,7 @@ source "${WGS}/functions.sh"
 source ~/.bashrc
 
 # Activate kraken2 conda environment
-conda activate kraken2-2.1.2
+conda activate kraken2
 
 # Create output folders
 mkdir reports/kraken2

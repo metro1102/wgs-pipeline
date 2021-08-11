@@ -27,26 +27,26 @@ conda deactivate
 rm qiime2-2021.4-py38-linux-conda.yml
 
 infoLog "Installing kneaddata + multiqc ..."
-conda create -n kneaddata-0.7.4 && conda activate kneaddata-0.7.4
+conda create -n kneaddata && conda activate kneaddata
 conda install -y kneaddata
 conda install -y -c bioconda -c conda-forge multiqc
 conda deactivate
 
 infoLog " Installing kraken2 + bracken ..."
-conda create -y -n kraken2-2.1.2 && conda activate kraken2-2.1.2
+conda create -y -n kraken2 && conda activate kraken2
 conda install -y kraken2
 conda install -y bracken
 conda deactivate
 
 infoLog "Installing metaphlan ..."
-conda create -y -n metaphlan-3.0.10
-conda install metaphlan
-conda install -c conda-forge/label/cf202003 tbb
 metaphlan --install --bowtiedb ${ROOT}/databases/humann/bowtie2
+conda create -y -n metaphlan && conda activate metaphlan
+conda install -y metaphlan
+conda install -y -c conda-forge/label/cf202003 tbb
 conda deactivate
 
-infoLog "Installing humann"
-conda create -y -n humann
+infoLog "Installing humann ..."
+conda create -y -n humann && conda activate humann
 conda install -y -c bioconda humann
 conda deactivate
 
@@ -81,7 +81,7 @@ mkdir ${ROOT}/databases
 cd ${ROOT}/databases
 
 initLog "Building kneaddata database(s) ..."
-conda activate kneaddata-0.7.4
+conda activate kneaddata
 mkdir kneaddata
 cd kneaddata
 
@@ -92,7 +92,7 @@ cd ..
 conda deactivate
 
 initLog "Building kraken2 database(s) ..."
-conda activate kraken2-2.1.2
+conda activate kraken2
 mkdir kraken2
 cd kraken2
 
