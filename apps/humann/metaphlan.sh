@@ -14,8 +14,8 @@ source "${WGS}/functions.sh"
 # Initate bash shell using conda
 source ~/.bashrc
 
-# Activate metaphlan conda environment
-conda activate metaphlan
+# Activate humann conda environment
+conda activate humann
 
 # Create output folders
 mkdir results/bowtie2

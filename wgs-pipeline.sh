@@ -277,7 +277,7 @@ elif [[ $PIPELINE = "metaphlan" ]]; then
 
     infoLog "Running processed sequence read(s) through metaphlan..."
 
-    prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/metaphlan/ ${WGS}/apps/metaphlan/metaphlan.sh | sed 's/Submitted batch job //')
+    prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/metaphlan/ ${WGS}/apps/humann/metaphlan.sh | sed 's/Submitted batch job //')
 
     ##########################################################################
     #                                Run krona                               #
@@ -285,7 +285,7 @@ elif [[ $PIPELINE = "metaphlan" ]]; then
 
     infoLog "Running metaphlan merged_abundance_table through krona..."
 
-    prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/metaphlan/ ${WGS}/apps/metaphlan/krona.sh | sed 's/Submitted batch job //')
+    prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/metaphlan/ ${WGS}/apps/humann/krona.sh | sed 's/Submitted batch job //')
 
     ###########################################################################
     #                               Run hclust2                               #
@@ -293,7 +293,7 @@ elif [[ $PIPELINE = "metaphlan" ]]; then
 
     infoLog "Running metaphlan results through hclust2 for abundance heatmapping for species..."
 
-    prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/metaphlan/ ${WGS}/apps/metaphlan/hclust2.sh | sed 's/Submitted batch job //')
+    prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/metaphlan/ ${WGS}/apps/humann/hclust2.sh | sed 's/Submitted batch job //')
 
 fi
 
