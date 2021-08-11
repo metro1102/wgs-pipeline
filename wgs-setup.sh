@@ -68,7 +68,7 @@ mkdir ${ROOT}/adapters
 
 cd ${ROOT}/adapters
 
-git clone https://gist.github.com/5cf1d8b071418367d73d768d6549f867.git
+wget https://gist.githubusercontent.com/metro1102/5cf1d8b071418367d73d768d6549f867/raw/a7d05437e5aad2419db0554b596c19358e767a68/illumina_adapters_DNA.fastq
 
 cd ~
 
