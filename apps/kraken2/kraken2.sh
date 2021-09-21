@@ -17,6 +17,8 @@ source ~/.bashrc
 # Activate kraken2 conda environment
 conda activate kraken2
 
+cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}
+
 # Create output folders
 mkdir reports/kraken2
 mkdir results/kraken2

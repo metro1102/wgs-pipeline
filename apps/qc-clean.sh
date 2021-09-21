@@ -17,6 +17,8 @@ source ~/.bashrc
 # Activate QC conda environment
 conda activate kneaddata
 
+cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}
+
 # Create output folders
 mkdir reports/fastqc/after_trimming
 mkdir reports/multiqc/after_trimming

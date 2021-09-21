@@ -17,6 +17,8 @@ source ~/.bashrc
 # Activate krona conda environment
 conda activate krona
 
+cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}
+
 # Create output folders
 mkdir reports/krona
 mkdir reports/krona/kraken2

@@ -17,6 +17,8 @@ source ~/.bashrc
 # Activate kneaddata conda environment
 conda activate kneaddata
 
+cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}
+
 # Create output folder
 mkdir reports/kneaddata
 

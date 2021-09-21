@@ -32,7 +32,7 @@ BOWTIE2DB="${ROOT}/databases/humann/"
 
 WGS="${ROOT}/scripts/wgs-pipeline"
 ADAPTERS="${ROOT}/adapters/illumina_adapters_DNA.fasta"
-TRIMMOMATIC="${ROOT}/miniconda3/envs/kneaddata-0.7.4/share/trimmomatic-0.39-2"
+TRIMMOMATIC="${ROOT}/miniconda3/envs/kneaddata/share/trimmomatic-0.39-2"
 
 ############################### ! DO NOT EDIT ! ###############################
 

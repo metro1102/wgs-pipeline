@@ -17,6 +17,8 @@ source ~/.bashrc
 # Activate kneaddata conda environment
 conda activate kneaddata
 
+cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}
+
 cd ../../reads/${SAMPLE_TYPE}
 
 # Run trimmomatic on available sequence reads
