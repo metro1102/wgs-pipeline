@@ -15,7 +15,7 @@ source "../../functions.sh"
 source ~/.bashrc
 
 # Activate krona conda environment
-conda activate krona-2.8
+conda activate krona
 
 # Create output folders
 mkdir reports/krona

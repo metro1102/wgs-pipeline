@@ -15,7 +15,7 @@ source "../functions.sh"
 source ~/.bashrc
 
 # Create kneaddata conda environment
-conda create -n kneaddata && conda activate kneaddata
+conda create -y -n kneaddata && conda activate kneaddata
 
 infoLog "Installing kneaddata + multiqc ..."
 conda install -y kneaddata

@@ -18,7 +18,7 @@ source ~/.bashrc
 conda create -y -n biom && conda activate biom
 
 infoLog "Installing biom ..."
-conda install -c bioconda kraken-biom
+conda install -y -c bioconda kraken-biom
 
 # Deactivate biom conda environment
 conda deactivate

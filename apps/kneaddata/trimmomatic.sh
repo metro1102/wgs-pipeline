@@ -15,7 +15,7 @@ source "../../functions.sh"
 source ~/.bashrc
 
 # Activate kneaddata conda environment
-conda activate kneaddata-0.7.4
+conda activate kneaddata
 
 cd ../../reads/${SAMPLE_TYPE}
 

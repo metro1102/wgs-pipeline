@@ -15,7 +15,7 @@ source "../functions.sh"
 source ~/.bashrc
 
 # Activate QC conda environment
-conda activate kneaddata-0.7.4
+conda activate kneaddata
 
 # Create output folders
 mkdir reports/fastqc/after_trimming

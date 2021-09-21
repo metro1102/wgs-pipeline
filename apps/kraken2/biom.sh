@@ -15,7 +15,7 @@ source "../../functions.sh"
 source ~/.bashrc
 
 # Activate biom conda environment
-conda activate kraken-biom-1.0.1
+conda activate biom
 
 cd reports/kraken2/bracken
 

@@ -20,13 +20,14 @@ infoLog "Cloning wgs-pipeline from https://github.com/metro1102/wgs-pipeline.git
 git clone https://github.com/metro1102/wgs-pipeline.git
 
 infoLog "Downloading dependencies for wgs-pipeline ..."
-cd wgs-pipeline/scripts
+cd wgs-pipeline/apps
 mkdir dependencies
 cd dependencies
 
 infoLog "Downloading KrakenTools ..."
 wget https://github.com/jenniferlu717/KrakenTools/archive/refs/tags/v1.2.tar.gz
 tar zxvf v1.2.tar.gz
+rm v1.2.tar.gz
 mv KrakenTools-1.2 KrakenTools
 
 infoLog "Downloading MetaPhlAn/metaphlan2krona.py ..."
