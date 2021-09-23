@@ -17,6 +17,6 @@ source ~/.bashrc
 cd ${ROOT}/adapters
 
 infoLog "Downloading Illumina Adapters for DNA ..."
-wget https://gist.githubusercontent.com/metro1102/5cf1d8b071418367d73d768d6549f867/raw/a7d05437e5aad2419db0554b596c19358e767a68/illumina_adapters_DNA.fastq
+wget https://gist.githubusercontent.com/metro1102/5cf1d8b071418367d73d768d6549f867/raw/3001deea2366fcef22638f3c4d56f26e6e44cee3/illumina_adapters_DNA.fasta
 
 cd ~
