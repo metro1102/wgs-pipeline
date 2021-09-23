@@ -112,7 +112,7 @@ fi
 
 sleep 5
 
-if [[ $PIPELINE = "kraken2" ]] || [[ $PIPELINE = "metaphlan" ]]; then
+if [[ $PIPELINE = "kraken2" ]] || [[ $PIPELINE = "metaphlan" ]] || [[ $PIPELINE = "humann" ]]; then
 
     infoLog "Running the ${PIPELINE} workflow..."
 
@@ -130,7 +130,7 @@ if [[ $PIPELINE = "kraken2" ]] || [[ $PIPELINE = "metaphlan" ]]; then
 
     # If using metaphlan, verify if required database path exists
 
-    if [[ $PIPELINE = "metaphlan" ]] && [[ -z "$BOWTIE2DB" ]]; then
+    if [[ $PIPELINE = "metaphlan" ]] && [[ -z "$METAPHLANDB" ]]; then
 
         errorLog "Please provide a full path to your metaphlan (bowtie2) database!"
 
@@ -138,15 +138,25 @@ if [[ $PIPELINE = "kraken2" ]] || [[ $PIPELINE = "metaphlan" ]]; then
 
     fi
 
-elif [[ $PIPELINE != "kraken2" ]] || [[ $PIPELINE != "metaphlan" ]]; then
+    # If using humann, verify if required database path exists
 
-    errorLog "Please set your desired pipeline to 'kraken2' or 'metaphlan'!"
+    if [[ $PIPELINE = "humann" ]] && [[ -z "$HUMANNDB"]]; then
+
+        errorLog "Please provide a full path to your humann (chocophlan) database!"
+
+        exit
+
+    fi
+
+elif [[ $PIPELINE != "kraken2" ]] || [[ $PIPELINE != "metaphlan" ]] || [[ $PIPELINE != "humann" ]]; then
+
+    errorLog "Please set your desired pipeline to ['kraken2', 'metaphlan', or 'humann']!"
 
     exit
 
 elif [ -z "$PIPELINE" ]; then
 
-    errorLog "Please set a desired pipeline ['kraken2' or 'metaphlan']!"
+    errorLog "Please set a desired pipeline ['kraken2', 'metaphlan', 'humann']!"
 
     exit
 
@@ -277,7 +287,7 @@ elif [[ $PIPELINE = "metaphlan" ]]; then
 
     infoLog "Running processed sequence read(s) through metaphlan..."
 
-    prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/humann/ ${WGS}/apps/humann/metaphlan.sh | sed 's/Submitted batch job //')
+    prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/metaphlan/ ${WGS}/apps/metaphlan/metaphlan.sh | sed 's/Submitted batch job //')
 
     ##########################################################################
     #                                Run krona                               #
@@ -285,7 +295,7 @@ elif [[ $PIPELINE = "metaphlan" ]]; then
 
     infoLog "Running metaphlan merged_abundance_table through krona..."
 
-    prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/humann/ ${WGS}/apps/humann/krona.sh | sed 's/Submitted batch job //')
+    prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/metaphlan/ ${WGS}/apps/metaphlan/krona.sh | sed 's/Submitted batch job //')
 
     ###########################################################################
     #                               Run hclust2                               #
@@ -293,7 +303,13 @@ elif [[ $PIPELINE = "metaphlan" ]]; then
 
     infoLog "Running metaphlan results through hclust2 for abundance heatmapping for species..."
 
-    prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/humann/ ${WGS}/apps/humann/hclust2.sh | sed 's/Submitted batch job //')
+    prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/metaphlan/ ${WGS}/apps/metaphlan/hclust2.sh | sed 's/Submitted batch job //')
+
+elif [[ $PIPELINE = "humann" ]]; then
+
+    infoLog "Running processed sequence read(s) through humann..."
+
+    prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/humann/ ${WGS}/apps/humann/humann.sh | sed 's/Submitted batch job //')
 
 fi
 

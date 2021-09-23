@@ -28,7 +28,7 @@ for i in results/paired/*_paired_1.fastq
 do
    filename=$(basename "$i")
    fname="${filename%_paired_*.fastq}";
-   metaphlan --bowtie2db ${BOWTIE2DB} results/paired/${fname}_paired_1.fastq,results/paired/${fname}_paired_2.fastq --input_type fastq --bowtie2out results/bowtie2/${fname}.bowtie2.bz2 -o reports/metaphlan/${fname}.txt
+   metaphlan --bowtie2db ${METAPHLANDB} results/paired/${fname}_paired_1.fastq,results/paired/${fname}_paired_2.fastq --input_type fastq --bowtie2out results/bowtie2/${fname}.bowtie2.bz2 -o reports/metaphlan/${fname}.txt
 done
 
 cd reports/metaphlan

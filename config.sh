@@ -6,14 +6,14 @@
 
 # General Settings ############################################################
 
-ROOT=""      # Root directory for all of your tools..
+ROOT=""      # Root directory for all of your tools.
 PROJECTS="" # Projects directory for your projects.
 PROJECT_NAME=""             # Project name that you are working on.
 SAMPLE_TYPE=""                # Sample type for your working reads.
 FRAGMENT_TYPE=""              # If reads are "single" or "paired".
 
 TRIMMING=""                  # Trimming ("kneaddata" or "trimmomatic").
-PIPELINE=""                  # Pipeline ("kraken2" or "metaphlan").
+PIPELINE=""                  # Pipeline ("kraken2", "metaphlan", or "humann").
 ANALYSIS=""                      # Analysis ("WGS" or "16S").
 
 # Do NOT include a forward slash at the end of paths when setting directories!
@@ -22,7 +22,9 @@ ANALYSIS=""                      # Analysis ("WGS" or "16S").
 
 KNEADDATADB="${ROOT}/databases/kneaddata/"
 KRAKEN2DB="${ROOT}/databases/kraken2/"
-BOWTIE2DB="${ROOT}/databases/humann/"
+METAPHLANDB="${ROOT}/databases/humann"
+HUMANNDB="${ROOT}/databases/humann"
+UNIREFDB="${ROOT}/databases/humann"
 
 # Make sure to ADD the database paths that you wish to use!
 
