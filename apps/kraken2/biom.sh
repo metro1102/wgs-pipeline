@@ -19,6 +19,40 @@ conda activate biom
 
 cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${PIPELINE}/${ANALYSIS}
 
+cd reports/kraken2
+
+# Temporarily copy & rename kraken reports
+mkdir temp
+
+for i in *_report.kraken
+do
+    filename=$(basename "$i")
+    fname="${filename%_report.kraken}"
+    cp ${filename} temp/${fname}.kraken
+done
+
+cd temp
+
+# Generate biom format & summarize the results
+kraken-biom *.kraken -o sequences.biom --fmt json
+
+infoLog "Generating a biom file summary for kraken results..."
+
+biom summarize-table -i sequences.biom -o sequences-summary.txt
+
+# Move biom files back to the main directory
+mv sequences.biom ../../../
+mv sequences-summary.txt ../../../
+
+# Remove temporary folder
+cd .. && rm -r temp
+
+cd ../../
+
+# Rename biom files to sample type
+mv sequences.biom ${ANALYSIS}-${SAMPLE_TYPE}-kraken-results.biom
+mv sequences-summary.txt ${ANALYSIS}-${SAMPLE_TYPE}-kraken-summary.txt
+
 cd reports/kraken2/bracken
 
 # Temporarily copy & rename bracken species reports
@@ -49,7 +83,7 @@ cd temp
 # Generate biom format & summarize the results
 kraken-biom *.bracken -o sequences.biom --fmt json
 
-infoLog "Generating a biom file summary..."
+infoLog "Generating a biom file summary for bracken results..."
 
 biom summarize-table -i sequences.biom -o sequences-summary.txt
 
