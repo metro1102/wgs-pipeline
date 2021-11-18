@@ -17,7 +17,7 @@ source ~/.bashrc
 # Activate krona conda environment
 conda activate krona
 
-cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}
+cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${PIPELINE}/${ANALYSIS}
 
 # Create output folders
 mkdir reports/krona

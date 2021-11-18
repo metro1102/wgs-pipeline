@@ -17,9 +17,9 @@ source ~/.bashrc
 # Activate kneaddata conda environment
 conda activate kneaddata
 
-cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}
+cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${PIPELINE}/${ANALYSIS}
 
-cd ../../reads/${SAMPLE_TYPE}
+cd ../../../reads/${SAMPLE_TYPE}
 
 # Run trimmomatic on available sequence reads
 if [[ $FRAGMENT_TYPE = "paired" ]]; then

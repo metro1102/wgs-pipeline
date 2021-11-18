@@ -16,7 +16,7 @@ source ~/.bashrc
 
 conda activate kraken2
 
-cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}
+cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${PIPELINE}/${ANALYSIS}
 
 mkdir results/kraken2/bracken
 mkdir reports/kraken2/bracken
