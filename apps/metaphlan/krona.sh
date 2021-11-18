@@ -26,7 +26,7 @@ mkdir reports/krona/metaphlan
 cd reports/metaphlan
 
 # Generate krona using species reports from bracken
-python ${WGS}/apps/dependencies/MetaPhlan/metaphlan2krona.py -r ../metaphlan/merged_abundance_table.txt -o ../krona/metaphlan/merged_abundance_table.krona
+python ${WGS}/apps/dependencies/MetaPhlan/metaphlan2krona.py --profile ../metaphlan/merged_abundance_table.txt --krona ../krona/metaphlan/merged_abundance_table.krona
 
 ktImportText ../krona/metaphlan/*.krona -o ../krona/metaphlan.krona.html
 
