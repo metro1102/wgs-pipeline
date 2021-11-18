@@ -78,6 +78,9 @@ mkdir trimmomatic
 mkdir unmatched
 mkdir logs
 
+mv *_bowtie2_paired_* homo_sapien/.
+mv *_bowtie2_unmatched_* unmatched/.
+
 mv *Homo_sapiens* homo_sapien/.
 mv *trimmed* trimmomatic/.
 mv *unmatched* unmatched/.

@@ -5,7 +5,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=2G
-#SBATCH --time=120:00:00
+#SBATCH --time=72:00:00
 
 ###############################################################################
 #                                Initalization                                #
@@ -64,7 +64,7 @@ if [ ! -z "$SAMPLE_TYPE" ]; then
 
 elif [ -z "$SAMPLE_TYPE" ]; then
 
-    errorLog "Please specify the sample type for your working reads!"
+    errorLog "Please specify a sample type for your working reads!"
 
     exit
 
@@ -140,7 +140,7 @@ if [[ $PIPELINE = "kraken2" ]] || [[ $PIPELINE = "metaphlan" ]] || [[ $PIPELINE 
 
     # If using humann, verify if required database path exists
 
-    if [[ $PIPELINE = "humann" ]] && [[ -z "$HUMANNDB"]]; then
+    if [[ $PIPELINE = "humann" ]] && [[ -z "$HUMANNDB" ]]; then
 
         errorLog "Please provide a full path to your humann (chocophlan) database!"
 
