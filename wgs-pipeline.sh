@@ -372,13 +372,29 @@ if [[ $PIPELINE = "kraken2" ]]; then
 
     if [[ ! -f "${ANALYSIS}-${SAMPLE_TYPE}-bracken-results.biom" ]] && [[ ! -f "${ANALYSIS}-${SAMPLE_TYPE}-bracken-summary.txt" ]]; then
 
-        infoLog "Generating a biom file from bracken species reports..."
+        infoLog "Generating biom files from kraken & bracken reports..."
 
         prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/kraken2/ ${WGS}/apps/kraken2/biom.sh | sed 's/Submitted batch job //')
 
     elif [[ -f "${ANALYSIS}-${SAMPLE_TYPE}-bracken-results.biom" ]] && [[ -f "${ANALYSIS}-${SAMPLE_TYPE}-bracken-summary.txt" ]]; then
 
-        infoLog "Skipping biom file generation from bracken species reports..."
+        infoLog "Skipping biom file generation from kraken & bracken reports..."
+
+    fi
+
+    ###########################################################################
+    #                                 Run qiime                               #
+    ###########################################################################
+
+    if [[ ! -f "${ANALYSIS}-${SAMPLE_TYPE}-kraken-taxa-barplot.qzv" ]] && [[ ! -f "${ANALYSIS}-${SAMPLE_TYPE}-bracken-taxa-barplot.qzv" ]]; then
+
+        infoLog "Generating qiime2 taxa bar plots from kraken & bracken biom files..."
+
+        prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/kraken2/ ${WGS}/apps/kraken2/qiime2.sh | sed 's/Submitted batch job //')
+
+    elif [[ -f "${ANALYSIS}-${SAMPLE_TYPE}-kraken-taxa-barplot.qzv" ]] && [[ -f "${ANALYSIS}-${SAMPLE_TYPE}-bracken-taxa-barplot.qzv" ]]; then
+
+        infoLog "Skipping qiime2 taxa bar plot(s) generation from kraken & bracken biom files..."
 
     fi
 
