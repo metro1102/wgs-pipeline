@@ -17,7 +17,7 @@ source ~/.bashrc
 # Activate biom conda environment
 conda activate qiime2
 
-cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${PIPELINE}/${ANALYSIS}
+cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}
 
 # For kraken results
 qiime tools import \

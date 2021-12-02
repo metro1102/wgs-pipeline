@@ -206,17 +206,6 @@ elif [[ -d "${SAMPLE_TYPE}" ]]; then
 
 fi
 
-# Check if pipeline folder exists
-if [[ ! -d "${PIPELINE}" ]]; then
-
-    mkdir ${PIPELINE} && cd ${PIPELINE}
-
-elif [[ -d "${PIPELINE}" ]]; then
-
-    cd ${PIPELINE}
-
-fi
-
 # Check if analysis folder exists
 if [[ ! -d "${ANALYSIS}" ]]; then
 

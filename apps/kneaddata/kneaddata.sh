@@ -17,12 +17,12 @@ source ~/.bashrc
 # Activate kneaddata conda environment
 conda activate kneaddata
 
-cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${PIPELINE}/${ANALYSIS}
+cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}
 
 # Create output folder
 mkdir reports/kneaddata
 
-cd ../../../reads/${SAMPLE_TYPE}
+cd ../../reads/${SAMPLE_TYPE}
 
 # Run kneaddata on available sequence reads
 if [[ $FRAGMENT_TYPE = "paired" ]]; then
@@ -41,7 +41,7 @@ if [[ $FRAGMENT_TYPE = "paired" ]]; then
         --trimmomatic-options="${TRIMMOMATIC_OPTIONS}" \
         --reference-db ${KNEADDATADB} \
         --max-memory 40g -p 8 -t 8 --output-prefix ${fname} \
-        --output ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${PIPELINE}/${ANALYSIS}/results
+        --output ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}/results
   done
 elif [[ $FRAGMENT_TYPE = "single" ]]; then
   for i in *_R1_*.fastq.gz
@@ -58,11 +58,11 @@ elif [[ $FRAGMENT_TYPE = "single" ]]; then
         --trimmomatic-options="${TRIMMOMATIC_OPTIONS}" \
         --reference-db ${KNEADDATADB} \
         --max-memory 40g -p 8 -t 8 --output-prefix ${fname} \
-        --output ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${PIPELINE}/${ANALYSIS}/results
+        --output ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}/results
   done
 fi
 
-cd ../../${SAMPLE_TYPE}/${PIPELINE}/${ANALYSIS}
+cd ../../${SAMPLE_TYPE}/${ANALYSIS}
 
 # Output kneaddata report
 kneaddata_read_count_table --input results --output reports/kneaddata/reads_report.kneaddata

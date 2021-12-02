@@ -17,7 +17,7 @@ source ~/.bashrc
 # Activate humann conda environment
 conda activate humann
 
-cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${PIPELINE}/${ANALYSIS}
+cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}
 
 # Create output folders
 mkdir results/humann

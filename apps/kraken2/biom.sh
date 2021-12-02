@@ -17,7 +17,7 @@ source ~/.bashrc
 # Activate biom conda environment
 conda activate biom
 
-cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${PIPELINE}/${ANALYSIS}
+cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}
 
 cd reports/kraken2
 
