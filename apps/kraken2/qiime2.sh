@@ -15,9 +15,11 @@ source "../../functions.sh"
 source ~/.bashrc
 
 # Activate biom conda environment
-conda activate qiime2
+conda activate qiime2-2021.4
 
 cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}
+
+mkdir results/qiime2
 
 # For kraken results
 qiime tools import \
@@ -56,7 +58,7 @@ qiime tools import \
   --output-path bracken-taxonomy.qza
 
 qiime taxa barplot \
-  --i-table bracken_table.qza \
+  --i-table bracken-table.qza \
   --i-taxonomy bracken-taxonomy.qza \
   --m-metadata-file ../../../metadata.txt \
   --o-visualization ${ANALYSIS}-${SAMPLE_TYPE}-bracken-taxa-barplot.qzv
