@@ -114,7 +114,7 @@ sleep 5
 
 if [[ $PIPELINE = "kraken2" ]] || [[ $PIPELINE = "metaphlan" ]] || [[ $PIPELINE = "humann" ]]; then
 
-    infoLog "Running the ${PIPELINE} workflow..."
+    infoLog "Running ${PIPELINE} workflow..."
 
     sleep 5
 
@@ -245,6 +245,8 @@ elif [[ -d "reports/fastqc/before_trimming" ]] && [[ -d "reports/multiqc/before_
 
     infoLog "Skipping quality control for raw sequence read(s)..."
 
+    prev_job="SKIPPED"
+
 fi
 
 if [[ $TRIMMING = "kneaddata" ]]; then
@@ -257,11 +259,21 @@ if [[ $TRIMMING = "kneaddata" ]]; then
 
         infoLog "Running raw sequence read(s) through kneaddata..."
 
-        prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/kneaddata/ ${WGS}/apps/kneaddata/kneaddata.sh | sed 's/Submitted batch job //')
+        if [[ $prev_job = "SKIPPED" ]]; then
+
+            prev_job=$(sbatch --wait -D ${WGS}/apps/kneaddata/ ${WGS}/apps/kneaddata/kneaddata.sh | sed 's/Submitted batch job //')
+
+        else
+
+            prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/kneaddata/ ${WGS}/apps/kneaddata/kneaddata.sh | sed 's/Submitted batch job //')
+
+        fi
 
     elif [[ -d "reports/kneaddata" ]]; then
 
         infoLog "Skipping kneaddata for raw sequence read(s)..."
+
+        prev_job="SKIPPED"
 
     fi
 
@@ -275,11 +287,21 @@ elif [[ $TRIMMING = "trimmomatic" ]]; then
 
         infoLog "Running raw sequence read(s) through trimmomatic..."
 
-        prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/kneaddata/ ${WGS}/apps/kneaddata/trimmomatic.sh | sed 's/Submitted batch job //')
+        if [[ $prev_job = "SKIPPED" ]]; then
+
+            prev_job=$(sbatch --wait -D ${WGS}/apps/kneaddata/ ${WGS}/apps/kneaddata/trimmomatic.sh | sed 's/Submitted batch job //')
+
+        else
+
+            prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/kneaddata/ ${WGS}/apps/kneaddata/trimmomatic.sh | sed 's/Submitted batch job //')
+
+        fi
 
     elif [[ -d "results/trimmomatic" ]]; then
 
         infoLog "Skipping trimmomatic for raw sequence read(s)..."
+
+        prev_job="SKIPPED"
 
     fi
 
@@ -293,11 +315,21 @@ if [[ ! -d "reports/fastqc/after_trimming" ]] && [[ ! -d "reports/multiqc/after_
 
     infoLog "Running processed sequence read(s) through quality control..."
 
-    prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/ ${WGS}/apps/qc-clean.sh | sed 's/Submitted batch job //')
+    if [[ $prev_job = "SKIPPED" ]]; then
+
+        prev_job=$(sbatch --wait -D ${WGS}/apps/ ${WGS}/apps/qc-clean.sh | sed 's/Submitted batch job //')
+
+    else
+
+        prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/ ${WGS}/apps/qc-clean.sh | sed 's/Submitted batch job //')
+
+    fi
 
 elif [[ -d "reports/fastqc/after_trimming" ]] && [[ -d "reports/multiqc/after_trimming" ]]; then
 
     infoLog "Skipping quality control for processed sequence read(s)..."
+
+    prev_job="SKIPPED"
 
 fi
 
@@ -311,15 +343,25 @@ if [[ $PIPELINE = "kraken2" ]]; then
     #                               Run kraken2                               #
     ###########################################################################
 
-    if [[ ! -d "reports/kraken2" ]]; then
+    if [[ ! -d "reports/kraken2/${DATABASE_NAME}" ]]; then
 
         infoLog "Running processed sequence read(s) through kraken2..."
 
-        prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/kraken2/ ${WGS}/apps/kraken2/kraken2.sh | sed 's/Submitted batch job //')
+        if [[ $prev_job = "SKIPPED" ]]; then
 
-    elif [[ -d "reports/kraken2" ]]; then
+            prev_job=$(sbatch --wait -D ${WGS}/apps/kraken2/ ${WGS}/apps/kraken2/kraken2.sh | sed 's/Submitted batch job //')
+
+        else
+
+            prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/kraken2/ ${WGS}/apps/kraken2/kraken2.sh | sed 's/Submitted batch job //')
+
+        fi
+
+    elif [[ -d "reports/kraken2/${DATABASE_NAME}" ]]; then
 
         infoLog "Skipping kraken2 for processed sequence read(s)..."
+
+        prev_job="SKIPPED"
 
     fi
 
@@ -331,11 +373,21 @@ if [[ $PIPELINE = "kraken2" ]]; then
 
         infoLog "Running kraken2 reports through bracken..."
 
-        prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/kraken2/ ${WGS}/apps/kraken2/bracken.sh | sed 's/Submitted batch job //')
+        if [[ $prev_job = "SKIPPED" ]]; then
+
+            prev_job=$(sbatch --wait -D ${WGS}/apps/kraken2/ ${WGS}/apps/kraken2/bracken.sh | sed 's/Submitted batch job //')
+
+        else
+
+            prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/kraken2/ ${WGS}/apps/kraken2/bracken.sh | sed 's/Submitted batch job //')
+
+        fi
 
     elif [[ -d "reports/kraken2/bracken" ]]; then
 
         infoLog "Skipping bracken for kraken2 reports..."
+
+        prev_job="SKIPPED"
 
     fi
 
@@ -347,11 +399,21 @@ if [[ $PIPELINE = "kraken2" ]]; then
 
         infoLog "Running kraken2 & bracken reports through krona..."
 
-        prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/kraken2/ ${WGS}/apps/kraken2/krona.sh | sed 's/Submitted batch job //')
+        if [[ $prev_job = "SKIPPED" ]]; then
+
+            prev_job=$(sbatch --wait -D ${WGS}/apps/kraken2/ ${WGS}/apps/kraken2/krona.sh | sed 's/Submitted batch job //')
+
+        else
+
+            prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/kraken2/ ${WGS}/apps/kraken2/krona.sh | sed 's/Submitted batch job //')
+
+        fi
 
     elif [[ -d "reports/krona" ]]; then
 
         infoLog "Skipping krona for kraken2 & bracken reports..."
+
+        prev_job="SKIPPED"
 
     fi
 
@@ -363,11 +425,21 @@ if [[ $PIPELINE = "kraken2" ]]; then
 
         infoLog "Generating biom files from kraken & bracken reports..."
 
-        prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/kraken2/ ${WGS}/apps/kraken2/biom.sh | sed 's/Submitted batch job //')
+        if [[ $prev_job = "SKIPPED" ]]; then
+
+            prev_job=$(sbatch --wait -D ${WGS}/apps/kraken2/ ${WGS}/apps/kraken2/biom.sh | sed 's/Submitted batch job //')
+
+        else
+
+            prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/kraken2/ ${WGS}/apps/kraken2/biom.sh | sed 's/Submitted batch job //')
+
+        fi
 
     elif [[ -f "${ANALYSIS}-${SAMPLE_TYPE}-bracken-results.biom" ]] && [[ -f "${ANALYSIS}-${SAMPLE_TYPE}-bracken-summary.txt" ]]; then
 
         infoLog "Skipping biom file generation from kraken & bracken reports..."
+
+        prev_job="SKIPPED"
 
     fi
 
@@ -379,11 +451,21 @@ if [[ $PIPELINE = "kraken2" ]]; then
 
         infoLog "Generating qiime2 taxa bar plots from kraken & bracken biom files..."
 
-        prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/kraken2/ ${WGS}/apps/kraken2/qiime2.sh | sed 's/Submitted batch job //')
+        if [[ $prev_job = "SKIPPED" ]]; then
+
+            prev_job=$(sbatch --wait -D ${WGS}/apps/kraken2/ ${WGS}/apps/kraken2/qiime2.sh | sed 's/Submitted batch job //')
+
+        else
+
+            prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/kraken2/ ${WGS}/apps/kraken2/qiime2.sh | sed 's/Submitted batch job //')
+
+        fi
 
     elif [[ -f "${ANALYSIS}-${SAMPLE_TYPE}-kraken-taxa-barplot.qzv" ]] && [[ -f "${ANALYSIS}-${SAMPLE_TYPE}-bracken-taxa-barplot.qzv" ]]; then
 
         infoLog "Skipping qiime2 taxa bar plot(s) generation from kraken & bracken biom files..."
+
+        prev_job="SKIPPED"
 
     fi
 
@@ -397,11 +479,21 @@ elif [[ $PIPELINE = "metaphlan" ]]; then
 
         infoLog "Running processed sequence read(s) through metaphlan..."
 
-        prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/metaphlan/ ${WGS}/apps/metaphlan/metaphlan.sh | sed 's/Submitted batch job //')
+        if [[ $prev_job = "SKIPPED" ]]; then
+
+            prev_job=$(sbatch --wait -D ${WGS}/apps/metaphlan/ ${WGS}/apps/metaphlan/metaphlan.sh | sed 's/Submitted batch job //')
+
+        else
+
+            prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/metaphlan/ ${WGS}/apps/metaphlan/metaphlan.sh | sed 's/Submitted batch job //')
+
+        fi
 
     elif [[ -d "reports/metaphlan" ]]; then
 
         infoLog "Skipping metaphlan for processed sequence read(s)..."
+
+        prev_job="SKIPPED"
 
     fi
 
@@ -413,11 +505,21 @@ elif [[ $PIPELINE = "metaphlan" ]]; then
 
         infoLog "Running metaphlan merged_abundance_table through krona..."
 
-        prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/metaphlan/ ${WGS}/apps/metaphlan/krona.sh | sed 's/Submitted batch job //')
+        if [[ $prev_job = "SKIPPED" ]]; then
+
+            prev_job=$(sbatch --wait -D ${WGS}/apps/metaphlan/ ${WGS}/apps/metaphlan/krona.sh | sed 's/Submitted batch job //')
+
+        else
+
+            prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/metaphlan/ ${WGS}/apps/metaphlan/krona.sh | sed 's/Submitted batch job //')
+
+        fi
 
     elif [[ -d "reports/krona" ]]; then
 
         infoLog "Skipping krona for metaphlan merged_abundance_table..."
+
+        prev_job="SKIPPED"
 
     fi
 
@@ -429,11 +531,21 @@ elif [[ $PIPELINE = "metaphlan" ]]; then
 
         infoLog "Running metaphlan results through hclust2 for abundance heatmapping for species..."
 
-        prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/metaphlan/ ${WGS}/apps/metaphlan/hclust2.sh | sed 's/Submitted batch job //')
+        if [[ $prev_job = "SKIPPED" ]]; then
+
+            prev_job=$(sbatch --wait -D ${WGS}/apps/metaphlan/ ${WGS}/apps/metaphlan/hclust2.sh | sed 's/Submitted batch job //')
+
+        else
+
+            prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/metaphlan/ ${WGS}/apps/metaphlan/hclust2.sh | sed 's/Submitted batch job //')
+
+        fi
 
     elif [[ -d "reports/metaphlan" ]]; then
 
-        infoLog "Skipping hclust 2 for metaphlan results..."
+        infoLog "Skipping hclust2 for metaphlan results..."
+
+        prev_job="SKIPPED"
 
     fi
 
@@ -443,11 +555,21 @@ elif [[ $PIPELINE = "humann" ]]; then
 
         infoLog "Running processed sequence read(s) through humann..."
 
-        prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/humann/ ${WGS}/apps/humann/humann.sh | sed 's/Submitted batch job //')
+        if [[ $prev_job = "SKIPPED" ]]; then
+
+            prev_job=$(sbatch --wait -D ${WGS}/apps/humann/ ${WGS}/apps/humann/humann.sh | sed 's/Submitted batch job //')
+
+        else
+
+            prev_job=$(sbatch --wait --dependency=afterok:$prev_job -D ${WGS}/apps/humann/ ${WGS}/apps/humann/humann.sh | sed 's/Submitted batch job //')
+
+        fi
 
     elif [[ -d "results/humann" ]]; then
 
         infoLog "Skipping humann for processed sequence read(s)..."
+
+        prev_job="SKIPPED"
 
     fi
 fi
