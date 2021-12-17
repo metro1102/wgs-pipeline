@@ -593,9 +593,8 @@ cd ${PIPELINE}
 mv *.out ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}/slurm
 
 cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}/slurm
-TODAY=$(date +"%Y%m%d")
-cat *.out > ${TODAY}-${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-slurm.log | sed 's/\x1b\[[0-9;]*m//g'
-mv *.out outputs
+cat *.out > ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-slurm.log | sed 's/\x1b\[[0-9;]*m//g'
+mv ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-slurm.log ..
 
 cd ..
 
