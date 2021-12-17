@@ -21,20 +21,20 @@ cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}
 
 # Create output folders
 mkdir reports/krona
-mkdir reports/krona/kraken2
-mkdir reports/krona/bracken
+mkdir reports/krona/${DATABASE_NAME}/kraken2
+mkdir reports/krona/${DATABASE_NAME}/bracken
 
-cd reports/kraken2
+cd reports/kraken2/${DATABASE_NAME}
 
 # Generate krona using species reports from bracken
 for i in *_report.kraken;
 do
    filename=$(basename "$i");
    fname="${filename%_report.kraken}";
-   python ${WGS}/apps/dependencies/KrakenTools/kreport2krona.py -r ${filename} -o ../krona/kraken2/${fname}.krona;
+   python ${WGS}/apps/dependencies/KrakenTools/kreport2krona.py -r ${filename} -o ../../krona/kraken2/${fname}.krona;
 done
 
-ktImportText ../krona/kraken2/*.krona -o ../krona/kraken2.krona.html
+ktImportText ../../krona/kraken2/*.krona -o ../../krona/kraken2.krona.html
 
 cd bracken
 
@@ -44,7 +44,7 @@ if [[ $ANALYSIS = "WGS" ]]; then
    do
       filename=$(basename "$i")
       fname="${filename%_species_report.bracken}"
-      python ${WGS}/apps/dependencies/KrakenTools/kreport2krona.py -r ${filename} -o ../../krona/bracken/${fname}.krona
+      python ${WGS}/apps/dependencies/KrakenTools/kreport2krona.py -r ${filename} -o ../../../krona/bracken/${fname}.krona
    done
 
 elif [[ $ANALYSIS = "16S" ]]; then
@@ -53,14 +53,14 @@ elif [[ $ANALYSIS = "16S" ]]; then
    do
       filename=$(basename "$i")
       fname="${filename%_genus_report.bracken}"
-      python ${WGS}/apps/dependencies/KrakenTools/kreport2krona.py -r ${filename} -o ../../krona/bracken/${fname}.krona
+      python ${WGS}/apps/dependencies/KrakenTools/kreport2krona.py -r ${filename} -o ../../../krona/bracken/${fname}.krona
    done
 
 fi
 
-ktImportText ../../krona/bracken/*.krona -o ../../krona/bracken.krona.html
+ktImportText ../../../krona/bracken/*.krona -o ../../../krona/bracken.krona.html
 
 # Deactivate krona conda environment
 conda deactivate
 
-cd ../../../
+cd ../../../../

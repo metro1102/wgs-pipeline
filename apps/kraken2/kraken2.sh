@@ -23,6 +23,9 @@ cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}
 mkdir reports/kraken2
 mkdir results/kraken2
 
+mkdir reports/kraken2/${DATABASE_NAME}
+mkdir results/kraken2/${DATABASE_NAME}
+
 # Run kraken2 on available reads
 if [[ $FRAGMENT_TYPE = "paired" ]]; then
 
@@ -30,7 +33,7 @@ if [[ $FRAGMENT_TYPE = "paired" ]]; then
     do
         filename=$(basename "$i");
         fname="${filename%_paired_*.fastq}";
-        kraken2 --db ${KRAKEN2DB} --threads 8 --use-names --output results/kraken2/${fname}_output.kraken --report reports/kraken2/${fname}_report.kraken --paired results/paired/${fname}_paired_1.fastq results/paired/${fname}_paired_2.fastq
+        kraken2 --db ${KRAKEN2DB} --threads 8 --use-names --output results/kraken2/${DATABASE_NAME}/${fname}_output.kraken --report reports/kraken2/${DATABASE_NAME}/${fname}_report.kraken --paired results/paired/${fname}_paired_1.fastq results/paired/${fname}_paired_2.fastq
     done
 
 elif [[ $FRAGMENT_TYPE = "single" ]]; then
@@ -39,7 +42,7 @@ elif [[ $FRAGMENT_TYPE = "single" ]]; then
     do
         filename=$(basename "$i");
         fname="${filename%*.fastq}";
-        kraken2 --db ${KRAKEN2DB} --threads 8 --use-names --output results/kraken2/${fname}_output.kraken --report reports/kraken2/${fname}_report.kraken results/single/${fname}.fastq
+        kraken2 --db ${KRAKEN2DB} --threads 8 --use-names --output results/kraken2/${DATABASE_NAME}/${fname}_output.kraken --report reports/kraken2/${DATABASE_NAME}/${fname}_report.kraken results/single/${fname}.fastq
     done
 
 fi

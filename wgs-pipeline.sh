@@ -467,25 +467,12 @@ mv *.out ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}/slurm
 cd apps
 mv *.out ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}/slurm
 
-if [[ $PIPELINE = "kraken2" ]]
-    cd kraken2
-    mv *.out ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}/slurm
-    cd ..
-elif [[ $PIPELINE = "metaphlan" ]]; then
-    cd metaphlan
-    mv *.out ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}/slurm
-    cd ..
-elif [[ $PIPELINE = "humann" ]]; then
-    cd humann
-    mv *.out ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}/slurm
-    cd ..
-fi
+cd ${PIPELINE}
+mv *.out ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}/slurm
 
 cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}/slurm
-
 TODAY=$(date +"%Y%m%d")
-cat *.out > ${TODAY}-${ANALYSIS}-${SAMPLE_TYPE}.log | sed 's/\x1b\[[0-9;]*m//g'
-
+cat *.out > ${TODAY}-${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-slurm.log | sed 's/\x1b\[[0-9;]*m//g'
 mv *.out outputs
 
 cd ..

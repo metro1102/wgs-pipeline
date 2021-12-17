@@ -20,50 +20,89 @@ conda activate qiime2-2021.4
 cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}
 
 mkdir results/qiime2
+mkdir results/qiime2/${DATABASE_NAME}
 
-# For kraken results
-qiime tools import \
-  --input-path ${ANALYSIS}-${SAMPLE_TYPE}-kraken-results.biom \
-  --type 'FeatureTable[Frequency]' \
-  --input-format BIOMV100Format \
-  --output-path kraken-table.qza
+# Check if a metadata file exists
 
-biom convert -i ${ANALYSIS}-${SAMPLE_TYPE}-kraken-results.biom -o kraken-hdf5-table.biom --table-type="OTU table" --to-hdf5
+if [[ ! -f "../../../metadata.txt" ]]; then
 
-qiime tools import \
-  --input-path kraken-hdf5-table.biom \
-  --type 'FeatureData[Taxonomy]' \
-  --input-format BIOMV210Format \
-  --output-path kraken-taxonomy.qza
+  errorLog "No metadata file exist! Skipping qiime2 taxa bar plot(s) generation..."
 
-qiime taxa barplot \
-  --i-table kraken-table.qza \
-  --i-taxonomy kraken-taxonomy.qza \
-  --m-metadata-file ../../../metadata.txt \
-  --o-visualization ${ANALYSIS}-${SAMPLE_TYPE}-kraken-taxa-barplot.qzv
+elif [[ -f "../../../metadata.txt" ]]; then
 
-# For bracken results
-qiime tools import \
-  --input-path ${ANALYSIS}-${SAMPLE_TYPE}-bracken-results.biom \
-  --type 'FeatureTable[Frequency]' \
-  --input-format BIOMV100Format \
-  --output-path bracken-table.qza
+  # For kraken results (all domains)
+  qiime tools import \
+    --input-path ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-kraken-results.biom \
+    --type 'FeatureTable[Frequency]' \
+    --input-format BIOMV100Format \
+    --output-path ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-kraken-table.qza
 
-biom convert -i ${ANALYSIS}-${SAMPLE_TYPE}-bracken-results.biom -o bracken-hdf5-table.biom --table-type="OTU table" --to-hdf5
+  biom convert -i ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-kraken-results.biom -o ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-kraken-hdf5-table.biom --table-type="OTU table" --to-hdf5
 
-qiime tools import \
-  --input-path bracken-hdf5-table.biom \
-  --type 'FeatureData[Taxonomy]' \
-  --input-format BIOMV210Format \
-  --output-path bracken-taxonomy.qza
+  qiime tools import \
+    --input-path ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-kraken-hdf5-table.biom \
+    --type 'FeatureData[Taxonomy]' \
+    --input-format BIOMV210Format \
+    --output-path ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-kraken-taxonomy.qza
 
-qiime taxa barplot \
-  --i-table bracken-table.qza \
-  --i-taxonomy bracken-taxonomy.qza \
-  --m-metadata-file ../../../metadata.txt \
-  --o-visualization ${ANALYSIS}-${SAMPLE_TYPE}-bracken-taxa-barplot.qzv
+  qiime taxa barplot \
+    --i-table ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-kraken-table.qza \
+    --i-taxonomy ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-kraken-taxonomy.qza \
+    --m-metadata-file ../../../metadata.txt \
+    --o-visualization ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-kraken-taxa-barplot.qzv
 
-# Cleanup main directory
+  # For kraken results (only bacteria)
 
-mv kraken-table.qza kraken-hdf5-table.biom kraken-taxonomy.qza results/qiime2
-mv bracken-table.qza bracken-hdf5-table.biom bracken-taxonomy.qza results/qiime2
+  qiime taxa filter-table \
+    --i-table ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-kraken-table.qza \
+    --i-taxonomy ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-kraken-taxonomy.qza \
+    --p-include k__bacteria \
+    --o-filtered-table ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-kraken-table-bacteria.qza
+
+  qiime taxa barplot \
+    --i-table ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-kraken-table-bacteria.qza \
+    --i-taxonomy ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-kraken-taxonomy.qza \
+    --m-metadata-file ../../../../metadata.txt \
+    --o-visualization ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-kraken-taxa-barplot-bacteria.qzv
+
+  # For bracken results (all domains)
+  qiime tools import \
+    --input-path ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-bracken-results.biom \
+    --type 'FeatureTable[Frequency]' \
+    --input-format BIOMV100Format \
+    --output-path ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-bracken-table.qza
+
+  biom convert -i ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-bracken-results.biom -o ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-bracken-hdf5-table.biom --table-type="OTU table" --to-hdf5
+
+  qiime tools import \
+    --input-path ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-bracken-hdf5-table.biom \
+    --type 'FeatureData[Taxonomy]' \
+    --input-format BIOMV210Format \
+    --output-path ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-bracken-taxonomy.qza
+
+  qiime taxa barplot \
+    --i-table ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-bracken-table.qza \
+    --i-taxonomy ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-bracken-taxonomy.qza \
+    --m-metadata-file ../../../metadata.txt \
+    --o-visualization ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-bracken-taxa-barplot.qzv
+
+  # For bracken results (only bacteria)
+
+  qiime taxa filter-table \
+    --i-table ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-bracken-table.qza \
+    --i-taxonomy ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-bracken-taxonomy.qza \
+    --p-include k__bacteria \
+    --o-filtered-table ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-bracken-table-bacteria.qza
+
+  qiime taxa barplot \
+    --i-table ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-bracken-table-bacteria.qza \
+    --i-taxonomy ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-bracken-taxonomy.qza \
+    --m-metadata-file ../../../../metadata.txt \
+    --o-visualization ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-bracken-taxa-barplot-bacteria.qzv
+
+  # Cleanup main directory
+
+  mv ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-kraken-table.qza ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-kraken-hdf5-table.biom ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-kraken-taxonomy.qza results/qiime2/${DATABASE_NAME}
+  mv ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-bracken-table.qza ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-bracken-hdf5-table.biom ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-bracken-taxonomy.qza results/qiime2/${DATABASE_NAME}
+
+fi

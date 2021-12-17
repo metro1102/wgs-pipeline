@@ -14,14 +14,16 @@ source "../../functions.sh"
 # Initate bash shell using conda
 source ~/.bashrc
 
+# Activate kraken2 conda environment
 conda activate kraken2
 
 cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}
 
-mkdir results/kraken2/bracken
-mkdir reports/kraken2/bracken
+# Create output folders
+mkdir results/kraken2/${DATABASE_NAME}/bracken
+mkdir reports/kraken2/${DATABASE_NAME}/bracken
 
-cd reports/kraken2
+cd reports/kraken2/${DATABASE_NAME}
 
 for i in *_report.kraken;
 do
@@ -52,7 +54,7 @@ combine_bracken_outputs.py --files *species_output.bracken -o all_species_output
 combine_bracken_outputs.py --files *genus_output.bracken -o all_genus_output.bracken
 combine_bracken_outputs.py --files *phylum_output.bracken -o all_phylum_output.bracken
 
-mv *_output.bracken ../../../results/kraken2/bracken
+mv *_output.bracken ../../../../results/kraken2/${DATABASE_NAME}/bracken
 
 # Deactivate kraken2 conda environment
 conda deactivate

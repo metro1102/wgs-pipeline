@@ -19,7 +19,7 @@ conda activate biom
 
 cd ${PROJECTS}/${PROJECT_NAME}/${SAMPLE_TYPE}/${ANALYSIS}
 
-cd reports/kraken2
+cd reports/kraken2/${DATABASE_NAME}
 
 # Temporarily copy & rename kraken reports
 mkdir temp
@@ -41,19 +41,19 @@ infoLog "Generating a biom file summary for kraken results..."
 biom summarize-table -i sequences.biom -o sequences-summary.txt
 
 # Move biom files back to the main directory
-mv sequences.biom ../../../
-mv sequences-summary.txt ../../../
+mv sequences.biom ../../../../
+mv sequences-summary.txt ../../../../
 
 # Remove temporary folder
 cd .. && rm -r temp
 
-cd ../../
+cd ../../../
 
 # Rename biom files to sample type
-mv sequences.biom ${ANALYSIS}-${SAMPLE_TYPE}-kraken-results.biom
-mv sequences-summary.txt ${ANALYSIS}-${SAMPLE_TYPE}-kraken-summary.txt
+mv sequences.biom ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-kraken-results.biom
+mv sequences-summary.txt ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-kraken-summary.txt
 
-cd reports/kraken2/bracken
+cd reports/kraken2/${DATABASE_NAME}/bracken
 
 # Temporarily copy & rename bracken species reports
 mkdir temp
@@ -91,15 +91,15 @@ biom summarize-table -i sequences.biom -o sequences-summary.txt
 conda deactivate
 
 # Move biom files back to the main directory
-mv sequences.biom ../../../../
-mv sequences-summary.txt ../../../../
+mv sequences.biom ../../../../../
+mv sequences-summary.txt ../../../../../
 
 # Remove temporary folder
 cd .. && rm -r temp
 
-cd ../../../
+cd ../../../../
 
 # Rename biom files to sample type
 #mkdir results/biom
-mv sequences.biom ${ANALYSIS}-${SAMPLE_TYPE}-bracken-results.biom
-mv sequences-summary.txt ${ANALYSIS}-${SAMPLE_TYPE}-bracken-summary.txt
+mv sequences.biom ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-bracken-results.biom
+mv sequences-summary.txt ${ANALYSIS}-${SAMPLE_TYPE}-${DATABASE_NAME}-bracken-summary.txt

@@ -6,15 +6,17 @@
 
 # General Settings ############################################################
 
-ROOT=""      # Root directory for all of your tools.
-PROJECTS="" # Projects directory for your projects.
+ROOT=""                     # Root directory for all of your tools.
+PROJECTS=""                 # Projects directory for your projects.
 PROJECT_NAME=""             # Project name that you are working on.
-SAMPLE_TYPE=""                # Sample type for your working reads.
-FRAGMENT_TYPE=""              # If reads are "single" or "paired".
+SAMPLE_TYPE=""              # Sample type for your working reads.
+FRAGMENT_TYPE=""            # If reads are "single" or "paired".
 
-TRIMMING=""                  # Trimming ("kneaddata" or "trimmomatic").
-PIPELINE=""                  # Pipeline ("kraken2", "metaphlan", or "humann").
-ANALYSIS=""                      # Analysis ("WGS" or "16S").
+TRIMMING=""                 # Trimming ("kneaddata" or "trimmomatic").
+PIPELINE=""                 # Pipeline ("kraken2", "metaphlan", or "humann").
+ANALYSIS=""                 # Analysis ("WGS" or "16S").
+
+DATABASE_NAME=""            # Database Name ("NCBI", "GTDB", "CHOCO").
 
 # Do NOT include a forward slash at the end of paths when setting directories!
 
